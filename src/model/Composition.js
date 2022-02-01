@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-export default class Composition {
-    constructor( timeSigBeatAmount, timeSigBeatUnit, tempo ) {
-        this.beatAmount = timeSigBeatAmount;
-        this.beatUnit   = timeSigBeatUnit;
+export default class Composition
+{
+    constructor( timeSigBeatAmount, timeSigBeatUnit, tempo, patternLength, patternAmount ) {
+        this.beatAmount    = timeSigBeatAmount;
+        this.beatUnit      = timeSigBeatUnit;
+        this.totalMeasures = patternLength * patternAmount;
 
         this.tempo  = tempo;
         this.tracks = [];

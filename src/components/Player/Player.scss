@@ -1,0 +1,12 @@
+@import "../../styles/_mixins";
+
+.player {
+    display: flex;
+    width: 200px;
+    justify-content: space-between;
+
+    button, span {
+        flex: 0.3;
+        text-align: center;
+    }
+}

@@ -24,6 +24,7 @@
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Form from "./components/Form/Form";
+import Player from "./components/Player/Player";
 import { createSynth } from "./services/AudioService";
 import { createComposition } from "./services/CompositionService";
 import { createMIDI } from "./services/MidiService";
@@ -80,6 +81,7 @@ function App() {
         <div className="app">
             <h1>Molecular Music Generator</h1>
             <Form onChange={ handleChange } />
+            <Player />
             <div className="buttons">
                 <button
                     type="button"

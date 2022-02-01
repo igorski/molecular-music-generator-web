@@ -1,3 +1,26 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2022 Igor Zinken
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+*/
 import { useState } from "react";
 import "./Form.scss";
 
@@ -35,7 +58,7 @@ export default function Form( props ) {
                 <section className="form__section">
                     <fieldset className="form__fieldset">
                         <legend>Time signature and tempo</legend>
-                        <div className="form__wrapper form__wrapper--full">
+                        <div className="form__wrapper form__wrapper--wide">
                             <input
                                 type="number"
                                 min="1"
@@ -68,6 +91,7 @@ export default function Form( props ) {
                         <div className="form__wrapper">
                             <input
                                 type="text"
+                                className="full"
                                 value={ scale }
                                 onChange={ e => setScale( e.target.value ) }
                             />
@@ -92,7 +116,7 @@ export default function Form( props ) {
                                 type="number"
                                 min="0"
                                 max="16"
-                                step="0.1"
+                                step="0.01"
                                 value={ note1Length }
                                 onChange={ e => setNote1Length( asFloat( e.target.value )) }
                             />
@@ -103,7 +127,7 @@ export default function Form( props ) {
                                 type="number"
                                 min="0"
                                 max="16"
-                                step="0.1"
+                                step="0.01"
                                 value={ note2Length }
                                 onChange={ e => setNote2Length( asFloat( e.target.value )) }
                             />

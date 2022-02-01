@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-import Pitch from "../utils/Pitch";
 import Pattern from "../model/Pattern";
 import Note from "../model/Note";
 import Composition from "../model/Composition";
@@ -29,7 +28,13 @@ import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 
 export const createComposition = ( props ) => {
 
-    const out = new Composition( props.timeSigBeatAmount, props.timeSigBeatUnit, props.tempo );
+    const out = new Composition(
+        props.timeSigBeatAmount,
+        props.timeSigBeatUnit,
+        props.tempo,
+        props.patternLength,
+        props.patternAmount
+    );
 
     // --- COMPOSITION
 
@@ -52,7 +57,7 @@ export const createComposition = ( props ) => {
 
     for ( let i = 0, l = scale.length; i < l; ++i ) {
         const note = scale[ i ];
-        pitches.push({ note, octave, frequency: Pitch.getFrequency( note, octave ) });
+        pitches.push({ note, octave });
 
         // reached end of the note list ? increment octave
 

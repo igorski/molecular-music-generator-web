@@ -25,11 +25,19 @@
         justify-content: space-between;
         margin: $spacing-small 0;
 
-        label, input {
-            flex: 0.5;
+        label {
+            flex: 0.7;
         }
 
-        &--full {
+        input {
+            flex: 0.3;
+
+            &.full {
+                flex: 1 !important;
+            }
+        }
+
+        &--wide {
             input {
                 flex: 0.3;
                 text-align: center;

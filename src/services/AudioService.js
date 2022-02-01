@@ -25,7 +25,9 @@ import * as Tone from "tone";
 
 const initializeCallbacks = [];
 let initialized = false;
+let sequencerCallback = null;
 let part = false;
+let currentComposition;
 
 /**
  * AudioContext can only be started after a user interaction.
@@ -49,18 +51,40 @@ export const init = () => {
     });
 };
 
+export const setSequencerCallback = callback => sequencerCallback = callback;
+
+export const goToMeasure = measureNum => Tone.Transport.position = `${measureNum}:0:0`;
+
 export const createSynth = composition => {
     if ( !initialized ) {
         initializeCallbacks.push( createSynth.bind( this, composition ));
         return;
     }
+
+    currentComposition = composition;
+
+    // create an FM synth for playback
+
     const synth = new Tone.PolySynth( Tone.FMSynth ).toDestination();
     const now   = Tone.now();
 
-    if ( part ) {
+    const isFirst = !part;
+
+    if ( isFirst ) {
+        // set a callback that fires upon playback completion of every measure
+        new Tone.Sequence(( time ) => {
+            sequencerCallback?.(
+                parseFloat( Tone.Transport.position.split( ':' )[ 0 ] ),
+                currentComposition.totalMeasures,
+                time
+            );
+        }, [ "C3" ], "1n" ).start( 0 );
+    } else {
         part.stop();
         Tone.Transport.stop();
     }
+
+    // prepare notes for playback in tone.js
 
     const notes = composition.tracks
         .flatMap(({ notes }) => notes )
@@ -72,9 +96,13 @@ export const createSynth = composition => {
             };
     });
 
+    // enqueue all notes in the composition
+
     part = new Tone.Part(( time, value ) => {
         synth.triggerAttackRelease( value.note, value.duration, now + value.time );
     }, notes ).start( 0 );
+
+    // start all
 
     Tone.Transport.start();
     Tone.Transport.bpm.value = composition.tempo;
