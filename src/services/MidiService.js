@@ -35,7 +35,7 @@ export const createMIDI = composition => {
         track.setTimeSignature( composition.beatAmount, composition.beatUnit );
         midiTracks.push( track );
     });
-console.warn(composition);
+
     // all measures have the same duration
     const measureDuration = getMeasureDurationInSeconds( composition.tempo, composition.beatAmount );
     // we specify event ranges in ticks (128 ticks == 1 beat)

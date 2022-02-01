@@ -86,8 +86,7 @@ export const createComposition = ( props ) => {
         // create new note
 
         const note = new Note(
-            pitch.note, pitch.octave, pitch.frequency, currentPosition,
-            Math.round( noteLength * QUARTER_NOTE )
+            pitch.note, pitch.octave, pitch.frequency, currentPosition, noteLength * QUARTER_NOTE
         );
 
         // add note to list (so it can be re-added in next iterations)
@@ -136,7 +135,7 @@ export const createComposition = ( props ) => {
             for ( const note of pattern.notes ) {
                 track.notes.push({
                     ...note,
-                    offset   : Math.round( note.offset + patternLength ),
+                    offset   : note.offset + patternLength,
                     duration : note.duration
                 });
             }
