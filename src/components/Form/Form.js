@@ -136,6 +136,14 @@ export default function Form( props ) {
                     />
                 </div>
             </fieldset>
+            <div className="wrapper">
+                <legend>Pattern to unique track</legend>
+                <input
+                    type="checkbox"
+                    checked={ uniqueTrackPerPattern }
+                    onChange={ () => setUniqueTrackPerPattern( !uniqueTrackPerPattern ) }
+                />
+            </div>
             <button type="submit">Generate</button>
         </form>
     );

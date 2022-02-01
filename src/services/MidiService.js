@@ -35,11 +35,11 @@ export const createMIDI = composition => {
         track.setTimeSignature( composition.beatAmount, composition.beatUnit );
         midiTracks.push( track );
     });
-
+console.warn(composition);
     // all measures have the same duration
     const measureDuration = getMeasureDurationInSeconds( composition.tempo, composition.beatAmount );
     // we specify event ranges in ticks (128 ticks == 1 beat)
-    const TICKS = ( 128 * 4 ) / measureDuration; // ticks per measure, songs are always in 4/4 time (currently...)
+    const TICKS = ( 128 * composition.beatAmount ) / measureDuration; // ticks per measure
 
     // walk through all patterns
     composition.tracks.forEach(( track, trackIndex ) => {
