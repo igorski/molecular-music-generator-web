@@ -26,7 +26,7 @@ export default class Composition {
         this.beatAmount = timeSigBeatAmount;
         this.beatUnit   = timeSigBeatUnit;
 
-        this.tempo  = 120;
+        this.tempo  = tempo;
         this.tracks = [];
     }
 };
