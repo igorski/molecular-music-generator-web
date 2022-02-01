@@ -1,0 +1,50 @@
+@import "../../styles/_mixins";
+
+.form {
+    @include large() {
+        &__container {
+            display: flex;
+        }
+
+        &__section {
+            vertical-align: top;
+            flex: 0.5;
+            margin-right: $spacing-small;
+        }
+    }
+
+    &__fieldset {
+        border: 1px solid #FFF;
+        border-radius: $spacing-small;
+        padding: $spacing-large;
+        margin-bottom: $spacing-medium;
+    }
+
+    &__wrapper {
+        display: flex;
+        justify-content: space-between;
+        margin: $spacing-small 0;
+
+        label, input {
+            flex: 0.5;
+        }
+
+        &--full {
+            input {
+                flex: 0.3;
+                text-align: center;
+            }
+        }
+    }
+
+    input[type=text],
+    input[type=number] {
+        border-radius: $spacing-small;
+        border: none;
+        padding: $spacing-small $spacing-medium;
+    }
+
+    input[type=submit] {
+        display: block;
+    }
+}
