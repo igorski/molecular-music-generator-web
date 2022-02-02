@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Form.scss";
 
 export default function Form( props ) {
+
+    // submit the form when the passed ref fn is invoked from the parent
 
     const [ timeSigBeatAmount, setTimeSigBeatAmount ] = useState( 4 );
     const [ timeSigBeatUnit,   setTimeSigBeatUnit ]   = useState( 4 );
@@ -38,13 +40,17 @@ export default function Form( props ) {
     const [ octaveUpper, setOctaveUpper ] = useState( 7 );
     const [ uniqueTrackPerPattern, setUniqueTrackPerPattern ] = useState( false );
 
+    useEffect(() => {
+        props.submitFn.current = submitForm;
+    }, []);
+
     const asFloat = value => {
-        const valueAsFloat = parseFloat ( value );
+        const valueAsFloat = parseFloat( value );
         return isNaN( valueAsFloat ) ? "" : valueAsFloat;
     };
 
     const submitForm = e => {
-        e.nativeEvent.preventDefault();
+        e?.nativeEvent?.preventDefault();
         props.onChange({
             timeSigBeatAmount, timeSigBeatUnit, tempo, scale,
             note1Length, note2Length, patternLength, patternAmount,
@@ -75,7 +81,7 @@ export default function Form( props ) {
                                 onChange={ e => setTimeSigBeatUnit( asFloat( e.target.value )) }
                             />
                         </div>
-                        <div className="form__wrapper">
+                        <div className="form__wrapper form__wrapper--padded-top">
                             <label>Tempo</label>
                             <input
                                 type="range"
@@ -97,15 +103,17 @@ export default function Form( props ) {
                             />
                         </div>
                     </fieldset>
-                    <div className="form__wrapper">
-                        <label htmlFor="utpp">Pattern to unique track</label>
-                        <input
-                            id="utpp"
-                            type="checkbox"
-                            checked={ uniqueTrackPerPattern }
-                            onChange={ () => setUniqueTrackPerPattern( !uniqueTrackPerPattern ) }
-                        />
-                    </div>
+                    <fieldset className="form__fieldset">
+                        <div className="form__wrapper">
+                            <label htmlFor="utpp">Pattern to unique track</label>
+                            <input
+                                id="utpp"
+                                type="checkbox"
+                                checked={ uniqueTrackPerPattern }
+                                onChange={ () => setUniqueTrackPerPattern( !uniqueTrackPerPattern ) }
+                            />
+                        </div>
+                    </fieldset>
                 </section>
                 <section className="form__section">
                     <fieldset className="form__fieldset">
@@ -165,7 +173,6 @@ export default function Form( props ) {
                                 onChange={ e => setOctaveLower( asFloat( e.target.value )) }
                             />
                         </div>
-                        <span>/</span>
                         <div className="form__wrapper">
                             <label>Higher octave</label>
                             <input
@@ -179,10 +186,7 @@ export default function Form( props ) {
                     </fieldset>
                 </section>
             </div>
-            <button
-                type="submit"
-                className="button"
-            >Generate</button>
+            <button type="submit" className="button">Generate</button>
         </form>
     );
 }

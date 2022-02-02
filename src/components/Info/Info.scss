@@ -1,0 +1,19 @@
+@import "../../styles/_mixins";
+
+.info {
+    @include large() {
+        flex: 0.3;
+        height: 420px;
+        overflow-y: auto;
+    }
+
+    background-color: #FFF;
+    color: #000;
+    border-radius: $spacing-medium;
+    padding: 0 $spacing-large $spacing-medium;
+    box-sizing: border-box;
+
+    ul {
+        padding: 0 0 0 $spacing-medium;
+    }
+}

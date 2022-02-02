@@ -2,6 +2,8 @@
 
 .form {
     @include large() {
+        flex: 0.7;
+
         &__container {
             display: flex;
         }
@@ -35,6 +37,10 @@
             &.full {
                 flex: 1 !important;
             }
+        }
+
+        &--padded-top {
+            margin-top: $spacing-medium;
         }
 
         &--wide {

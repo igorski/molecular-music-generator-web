@@ -1,12 +1,15 @@
 @import "../../styles/_mixins";
 
 .player {
-    display: flex;
-    width: 200px;
-    justify-content: space-between;
+    display: inline-block;
 
-    button, span {
-        flex: 0.3;
+    button {
+        display: inline-block;
+    }
+
+    .player__position {
+        display: inline-block;
         text-align: center;
+        width: 60px;
     }
 }

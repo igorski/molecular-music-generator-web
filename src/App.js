@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Form from "./components/Form/Form";
+import Info from "./components/Info/Info";
 import Player from "./components/Player/Player";
 import { createSynth } from "./services/AudioService";
 import { createComposition } from "./services/CompositionService";
@@ -44,6 +45,7 @@ function App() {
     useEffect(() => {
         try {
             if ( data ) {
+                console.warn("generate for",data);
                 setComposition( createComposition( data ));
                 toast( `Composition generated successfully.` );
             }
@@ -52,7 +54,7 @@ function App() {
         }
     }, [ data ]);
 
-    // directly generate MIDI once composition has been submitted
+    // directly generate MIDI once composition has been created
 
     useEffect(() => {
         try {
@@ -77,18 +79,23 @@ function App() {
         toast( `MIDI file "${fileName}" generated successfully.` );
     };
 
+    const formSubmitFn = useRef( null );
+
     return (
         <div className="app">
             <h1>Molecular Music Generator</h1>
-            <Form onChange={ handleChange } />
-            <Player />
-            <div className="buttons">
+            <div className="app__wrapper">
+                <Form submitFn={ formSubmitFn } onChange={ handleChange } />
+                <Info />
+            </div>
+            <div className="app__actions">
                 <button
                     type="button"
                     className="button"
                     disabled={ midi === null }
                     onClick={ downloadMIDI }
                 >Export MIDI</button>
+                <Player />
             </div>
             <ToastContainer hideProgressBar autoClose={2500} />
         </div>

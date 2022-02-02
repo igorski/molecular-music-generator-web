@@ -30,9 +30,11 @@ export default class Player extends Component {
         super( props );
 
         this.state = {
-            measure : 0,
-            total   : 1,
-            time    : 0
+            measure   : 0,
+            beat      : 0,
+            sixteenth : 0,
+            total     : 1,
+            time      : 0
         };
     }
 
@@ -45,8 +47,8 @@ export default class Player extends Component {
     }
 
     componentDidMount() {
-        setSequencerCallback(( measure, total, time ) => {
-            this.setState({ measure, total, time });
+        setSequencerCallback(( measure, beat, sixteenth, total, time ) => {
+            this.setState({ measure, beat, sixteenth, total, time });
         });
     }
 
@@ -63,7 +65,7 @@ export default class Player extends Component {
                     disabled={ this.state.measure === 0 }
                     onClick={ () => this.goToPreviousMeasure() }
                 >&#171;</button>
-                <p>{ this.state.measure + 1 } / { this.state.total }</p>
+                <div className="player__position">{ this.state.measure + 1 }:{ this.state.beat + 1 }:1</div>
                 <button
                     type="button"
                     className="button"
