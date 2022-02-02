@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Form from "./components/Form/Form";
 import Info from "./components/Info/Info";
@@ -36,23 +36,34 @@ import "./App.scss";
 import "./styles/_mixins.scss";
 
 function App() {
-    const [ data, setData ] = useState( null );
+
+    const [ data, setData ] = useState({
+        timeSigBeatAmount: 4,
+        timeSigBeatUnit  : 4,
+        tempo: 120,
+        scale: "C, D, D#, F, G, G#, A#",
+        note1Length: 2,
+        note2Length: 0.5,
+        patternLength: 4,
+        patternAmount: 8,
+        octaveLower: 2,
+        octaveUpper: 7,
+        uniqueTrackPerPattern: false
+    });
     const [ composition, setComposition ] = useState( null );
     const [ midi, setMidi ] = useState( null );
 
     // directly generate composition once data has been submitted
 
-    useEffect(() => {
+    const generateComposition = () => {
         try {
-            if ( data ) {
-                console.warn("generate for",data);
-                setComposition( createComposition( data ));
-                toast( `Composition generated successfully.` );
-            }
+            setComposition( createComposition( data ));
+            console.warn(data);
+            toast( `Composition generated successfully.` );
         } catch ( error ) {
             toast( `Error "${error}" occurred during generation of composition. Please verify input parameters and try again.` );
         }
-    }, [ data ]);
+    };
 
     // directly generate MIDI once composition has been created
 
@@ -79,16 +90,19 @@ function App() {
         toast( `MIDI file "${fileName}" generated successfully.` );
     };
 
-    const formSubmitFn = useRef( null );
-
     return (
         <div className="app">
             <h1>Molecular Music Generator</h1>
             <div className="app__wrapper">
-                <Form submitFn={ formSubmitFn } onChange={ handleChange } />
+                <Form formData={ data } onChange={ handleChange } />
                 <Info />
             </div>
             <div className="app__actions">
+                <button
+                    type="submit"
+                    className="button"
+                    onClick={ generateComposition }
+                >Generate</button>
                 <button
                     type="button"
                     className="button"
