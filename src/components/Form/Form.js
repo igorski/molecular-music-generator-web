@@ -43,20 +43,23 @@ export default function Form({ formData, onChange }) {
                 <section className="form__section">
                     <fieldset className="form__fieldset">
                         <legend>Time signature and tempo</legend>
-                        <div className="form__wrapper form__wrapper--wide">
+                        <div className="form__wrapper">
+                            <label>Time signature</label>
                             <input
                                 type="number"
                                 min="1"
                                 max="64"
+                                className="form__time-signature-input"
                                 value={ data.timeSigBeatAmount }
                                 onChange={ e => handleChange( "timeSigBeatAmount", asFloat( e.target.value )) }
                             />
-                            <span>/</span>
+                            <span className="form__time-signature-divider">/</span>
                             <input
                                 type="number"
                                 min="1"
                                 max="64"
                                 value={ data.timeSigBeatUnit }
+                                className="form__time-signature-input"
                                 onChange={ e => handleChange( "timeSigBeatUnit", asFloat( e.target.value )) }
                             />
                         </div>
