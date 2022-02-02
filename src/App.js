@@ -58,7 +58,6 @@ function App() {
     const generateComposition = () => {
         try {
             setComposition( createComposition( data ));
-            toast( `Composition generated successfully.` );
         } catch ( error ) {
             toast( `Error "${error}" occurred during generation of composition. Please verify input parameters and try again.` );
         }

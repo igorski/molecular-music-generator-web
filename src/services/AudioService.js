@@ -22,12 +22,15 @@
  * SOFTWARE.
 */
 import * as Tone from "tone";
+import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 
 const initializeCallbacks = [];
 let initialized = false;
 let sequencerCallback = null;
-let part = null;
+const parts = [];
 let sequence = null;
+let synth = null;
+let notes = [];
 
 /**
  * AudioContext can only be started after a user interaction.
@@ -53,7 +56,11 @@ export const init = () => {
 
 export const setSequencerCallback = callback => sequencerCallback = callback;
 
-export const goToMeasure = measureNum => Tone.Transport.position = `${measureNum}:0:0`;
+export const goToMeasure = measureNum => {
+    stopPlayingParts();
+    Tone.Transport.position = `${measureNum}:0:0`;
+    enqueueNextMeasure( measureNum );
+};
 
 export const createSynth = composition => {
     if ( !initialized ) {
@@ -61,43 +68,42 @@ export const createSynth = composition => {
         return;
     }
 
+    reset();
+
     // create an FM synth for playback
 
-    const synth = new Tone.PolySynth( Tone.FMSynth ).toDestination();
-    const now   = Tone.now();
-
-    if ( part ) {
-        part.stop();
-        sequence.stop();
-        sequence.dispose();
-        Tone.Transport.stop();
-    }
+    synth = new Tone.PolySynth( Tone.FMSynth ).toDestination();
 
     // prepare notes for playback in tone.js
 
-    const notes = composition.tracks
+    const measureDuration = getMeasureDurationInSeconds( composition.tempo, composition.beatAmount );
+
+    notes = composition.tracks
         .flatMap(({ notes }) => notes )
-        .map( track => {
+        .map( note => {
             return {
-                note     : `${track.note}${track.octave}`,
-                duration : track.duration,
-                time     : track.offset
+                note     : `${note.note}${note.octave}`,
+                duration : note.duration,
+                offset   : note.offset - ( measureDuration * note.measure ),
+                measure  : note.measure
             };
     });
 
-    // enqueue all notes in the composition
+    // enqueue the first measure of the composition
 
-    part = new Tone.Part(( time, value ) => {
-        synth.triggerAttackRelease( value.note, value.duration, now + value.time );
-    }, notes ).start( 0 );
+    enqueueNextMeasure( 0 );
 
     // set a callback that fires upon playback completion of every beat
 
+    const penultimateBeat = composition.beatAmount - 1;
     sequence = new Tone.Sequence(( time ) => {
         const [ bars, beats, sixteenths ] = Tone.Transport.position.split( ":" ).map( parseFloat );
         sequencerCallback?.(
             bars, beats, sixteenths, composition.totalMeasures, time
         );
+        if ( beats === penultimateBeat ) {
+            enqueueNextMeasure( bars + 1, measureDuration / composition.beatAmount );
+        }
     }, [ "C3" ], `${composition.beatAmount}n` ).start( 0 );
 
     // start all
@@ -105,3 +111,35 @@ export const createSynth = composition => {
     Tone.Transport.start();
     Tone.Transport.bpm.value = composition.tempo;
 };
+
+/* internal methods */
+
+function reset() {
+    stopPlayingParts();
+    synth?.disconnect();
+    sequence?.stop();
+    sequence?.dispose();
+    Tone.Transport.stop();
+}
+
+function stopPlayingParts() {
+    for ( const part of parts ) {
+        part.stop();
+        part.dispose();
+    }
+    parts.length = 0;
+}
+
+function enqueueNextMeasure( measureNum, delta = 0 ) {
+    const notesToEnqueue = notes.filter(({ measure }) => measure === measureNum );
+    if ( !notesToEnqueue.length ) {
+        return;
+    }
+    parts.push( new Tone.Part(( time, value ) => {
+        synth.triggerAttackRelease( value.note, value.duration, time );
+    }, notesToEnqueue.map( note => ({
+        ...note,
+        // use an array of objects as long as the object has a "time" attribute
+        time : note.offset + delta//( Tone.now() + note.offset ) + delta
+    })) ).start());
+}

@@ -22,11 +22,11 @@
  * SOFTWARE.
 */
 export default class Note {
-    constructor( note, octave, frequency, offset, duration ) {
+    constructor( note, octave, offset, duration, measure ) {
         this.note      = note;
         this.octave    = octave;
-        this.frequency = frequency; // frequency in Hz
         this.offset    = offset;    // offset within the sequence
         this.duration  = duration;  // length of the note
+        this.measure   = measure;   // measure the Note belongs to
     }
 }
