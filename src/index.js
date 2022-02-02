@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { init } from "./services/AudioService";
-import "./index.css";
+import "./index.scss";
 import App from "./App";
 //import reportWebVitals from "./reportWebVitals";
 

@@ -1,4 +1,7 @@
 @import "./styles/_mixins";
+@import "./styles/typography";
+
+$actionsHeight: 55px;
 
 .app {
     max-width: $app-width;
@@ -8,10 +11,40 @@
     color: white;
     margin: 0 auto;
 
+    &__title {
+        @include mobile() {
+            padding: 0 $spacing-large;
+            font-size: 150%;
+        }
+    }
+
     &__wrapper {
         @include large() {
             display: flex;
             justify-content: center;
+        }
+        @include mobile() {
+            padding: 0 $spacing-medium $actionsHeight;
+        }
+    }
+
+    &__actions {
+
+        // on mobile the actions panel is docked to the bottom
+
+        @include mobile() {
+            position: fixed;
+            z-index: 1;
+            width: 100%;
+            height: $actionsHeight;
+            bottom: 0;
+            border-top: 3px solid $color-1;
+            background-color: $color-4;
+            padding: $spacing-small $spacing-medium;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
         }
     }
 }

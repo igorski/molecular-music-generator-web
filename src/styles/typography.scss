@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+
+@mixin customFont() {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h1, h2, h3, legend, label {
+    @include customFont();
+}
+
+p, li {
+    font-size: 90%;
+}

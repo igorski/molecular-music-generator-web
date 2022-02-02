@@ -58,7 +58,6 @@ function App() {
     const generateComposition = () => {
         try {
             setComposition( createComposition( data ));
-            console.warn(data);
             toast( `Composition generated successfully.` );
         } catch ( error ) {
             toast( `Error "${error}" occurred during generation of composition. Please verify input parameters and try again.` );
@@ -92,7 +91,7 @@ function App() {
 
     return (
         <div className="app">
-            <h1>Molecular Music Generator</h1>
+            <h1 class="app__title">Molecular Music Generator</h1>
             <div className="app__wrapper">
                 <Form formData={ data } onChange={ handleChange } />
                 <Info />

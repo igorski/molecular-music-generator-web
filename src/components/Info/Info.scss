@@ -1,19 +1,57 @@
 @import "../../styles/_mixins";
 
 .info {
+    border-radius: $spacing-small;
+    margin-top: $spacing-small;
+    background-color: $color-2;
+
+    &--opened {
+        .info__panel {
+            display: block;
+            background-color: $color-2;
+            overflow-y: scroll;
+        }
+    }
+
     @include large() {
         flex: 0.3;
-        height: 420px;
+        height: 410px;
         overflow-y: auto;
     }
 
-    background-color: #FFF;
-    color: #000;
-    border-radius: $spacing-medium;
-    padding: 0 $spacing-large $spacing-medium;
-    box-sizing: border-box;
+    &__toggle-button {
 
-    ul {
-        padding: 0 0 0 $spacing-medium;
+        // toggle button is only visible on mobile, to toggle info visibility
+
+        @include large() {
+            display: none !important;
+        }
+        position: fixed;
+        top: $spacing-small;
+        right: $spacing-small;
+        margin-right: 0 !important;
+        z-index: 3;
+    }
+
+    &__panel {
+        padding: 0 $spacing-large $spacing-medium;
+        box-sizing: border-box;
+        color: $color-4;
+
+        ul {
+            padding: 0 0 0 $spacing-medium;
+        }
+
+        // on mobile the panel isn't visible until its toggled
+
+        @include mobile() {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
     }
 }

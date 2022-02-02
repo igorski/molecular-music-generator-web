@@ -1,15 +1,20 @@
 @import "../../styles/_mixins";
+@import "../../styles/typography";
 
 .player {
     display: inline-block;
 
     button {
         display: inline-block;
+        margin: 0;
     }
 
     .player__position {
+        @include customFont();
         display: inline-block;
         text-align: center;
         width: 60px;
+        padding: $spacing-xsmall 0;
+        background-color: $color-4;
     }
 }

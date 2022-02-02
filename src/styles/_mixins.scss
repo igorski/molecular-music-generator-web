@@ -1,4 +1,5 @@
 @import "_variables";
+@import "typography";
 
 /* 1. responsive breakoff points */
 
@@ -27,6 +28,7 @@
 /* 3. base UI components */
 
 @mixin button {
+    @include customFont();
     cursor: pointer;
     display: inline-block;
     -webkit-appearance: none;
@@ -55,4 +57,9 @@
 
 .button {
     @include button();
+}
+
+.round-button {
+    @include button();
+    border-radius: 50%;
 }
