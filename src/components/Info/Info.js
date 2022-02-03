@@ -61,7 +61,7 @@ export default function Info( props ) {
             </div>
             <button
                 type="button"
-                className="info__toggle-button round-button"
+                className="info__toggle-button"
                 onClick={ () => setOpened( !opened ) }
             >{ opened ? "x" : "?" }</button>
         </div>

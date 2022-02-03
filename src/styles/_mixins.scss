@@ -55,11 +55,7 @@
     }
 }
 
-.button {
-    @include button();
-}
-
-.round-button {
+@mixin roundButton() {
     @include button();
     border-radius: 50%;
 }

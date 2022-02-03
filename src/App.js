@@ -26,7 +26,6 @@ import { ToastContainer, toast } from "react-toastify";
 import Form from "./components/Form/Form";
 import Info from "./components/Info/Info";
 import Player from "./components/Player/Player";
-import { createSynth } from "./services/AudioService";
 import { createComposition } from "./services/CompositionService";
 import { createMIDI } from "./services/MidiService";
 import { saveAsFile } from "./services/FileService";
@@ -68,7 +67,6 @@ function App() {
     useEffect(() => {
         try {
             if ( composition ) {
-                createSynth( composition );
                 composition && setMidi( createMIDI( composition ));
             }
         } catch ( error ) {
@@ -98,16 +96,16 @@ function App() {
             <div className="app__actions">
                 <button
                     type="submit"
-                    className="button"
+                    className="app__actions-button"
                     onClick={ generateComposition }
                 >Generate</button>
                 <button
                     type="button"
-                    className="button"
+                    className="app__actions-button"
                     disabled={ midi === null }
                     onClick={ downloadMIDI }
                 >Export MIDI</button>
-                <Player />
+                <Player composition={ composition } />
             </div>
             <ToastContainer hideProgressBar autoClose={2500} />
         </div>

@@ -21,6 +21,8 @@
 
     &__toggle-button {
 
+        @include roundButton();
+
         // toggle button is only visible on mobile, to toggle info visibility
 
         @include large() {

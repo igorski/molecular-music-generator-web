@@ -30,6 +30,10 @@ $actionsHeight: 55px;
 
     &__actions {
 
+        &-button {
+            @include button();
+        }
+
         // on mobile the actions panel is docked to the bottom
 
         @include mobile() {

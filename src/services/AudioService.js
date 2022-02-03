@@ -26,7 +26,6 @@ import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 
 const initializeCallbacks = [];
 let initialized = false;
-let sequencerCallback = null;
 const parts = [];
 let sequence = null;
 let synth = null;
@@ -54,17 +53,31 @@ export const init = () => {
     });
 };
 
-export const setSequencerCallback = callback => sequencerCallback = callback;
+/**
+ * Start playback of the composition
+ */
+export const play = () => Tone.Transport.start();
 
+/**
+ * Halts playback of the composition
+ */
+export const pause = () => Tone.Transport.pause();
+
+/**
+ * Jump to a specific measure in the composition
+ */
 export const goToMeasure = measureNum => {
     stopPlayingParts();
     Tone.Transport.position = `${measureNum}:0:0`;
     enqueueNextMeasure( measureNum );
 };
 
-export const createSynth = composition => {
+/**
+ * Set up a Synth and Transport within tone.js to play back given composition
+ */
+export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
     if ( !initialized ) {
-        initializeCallbacks.push( createSynth.bind( this, composition ));
+        initializeCallbacks.push( setupCompositionPlayback.bind( this, composition, sequencerCallback ));
         return;
     }
 
@@ -89,27 +102,23 @@ export const createSynth = composition => {
             };
     });
 
-    // enqueue the first measure of the composition
+    // set up Transport
 
-    enqueueNextMeasure( 0 );
+    Tone.Transport.timeSignature = [ composition.beatAmount, composition.beatUnit ];
+    Tone.Transport.bpm.value = composition.tempo;
 
-    // set a callback that fires upon playback completion of every beat
+    // set a callback that enqueues the next measure on the first beat of a new bar
 
-    const penultimateBeat = composition.beatAmount - 1;
     sequence = new Tone.Sequence(( time ) => {
         const [ bars, beats, sixteenths ] = Tone.Transport.position.split( ":" ).map( parseFloat );
         sequencerCallback?.(
             bars, beats, sixteenths, composition.totalMeasures, time
         );
-        if ( beats === penultimateBeat ) {
-            enqueueNextMeasure( bars + 1, measureDuration / composition.beatAmount );
+        //console.warn( Tone.Transport.position );
+        if ( beats === 0 && Math.floor( sixteenths ) === 0 ) {
+            enqueueNextMeasure( bars );
         }
-    }, [ "C3" ], `${composition.beatAmount}n` ).start( 0 );
-
-    // start all
-
-    Tone.Transport.start();
-    Tone.Transport.bpm.value = composition.tempo;
+    }, [ "C3" ],  measureDuration / composition.beatAmount ).start( 0 );
 };
 
 /* internal methods */

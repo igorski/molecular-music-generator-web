@@ -4,12 +4,18 @@
 .player {
     display: inline-block;
 
-    button {
+    &__transport-button {
+        @include button();
         display: inline-block;
         margin: 0;
     }
 
-    .player__position {
+    &__play-button {
+        @include button();
+        margin-right: $spacing-small;
+    }
+
+    &__position {
         @include customFont();
         display: inline-block;
         text-align: center;

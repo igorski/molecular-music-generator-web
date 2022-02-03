@@ -22,7 +22,7 @@
  * SOFTWARE.
 */
 import { Component } from "react";
-import { setSequencerCallback, goToMeasure } from "../../services/AudioService";
+import { setupCompositionPlayback, play, pause, goToMeasure } from "../../services/AudioService";
 import "./Player.scss";
 
 export default class Player extends Component {
@@ -34,8 +34,32 @@ export default class Player extends Component {
             beat      : 0,
             sixteenth : 0,
             total     : 1,
-            time      : 0
+            time      : 0,
+            disabled  : !props.composition,
+            playing   : false,
         };
+    }
+
+    componentDidUpdate( prevProps ) {
+        if ( this.props.composition === prevProps.composition ) {
+            return;
+        }
+        setupCompositionPlayback( this.props.composition, ( measure, beat, sixteenth, total, time ) => {
+            this.setState({ measure, beat, sixteenth, total, time });
+        });
+        this.setState({ disabled: false });
+        if ( this.state.playing ) {
+            play();
+        }
+    }
+
+    togglePlayBack() {
+        if ( !this.state.playing ) {
+            play();
+        } else {
+            pause();
+        }
+        this.setState({ playing: !this.state.playing });
     }
 
     goToPreviousMeasure() {
@@ -46,30 +70,26 @@ export default class Player extends Component {
         goToMeasure( this.state.measure + 1 );
     }
 
-    componentDidMount() {
-        setSequencerCallback(( measure, beat, sixteenth, total, time ) => {
-            this.setState({ measure, beat, sixteenth, total, time });
-        });
-    }
-
-    componentWillUnmount() {
-        setSequencerCallback( null );
-    }
-
     render() {
         return (
             <div className="player">
                 <button
                     type="button"
-                    className="button"
-                    disabled={ this.state.measure === 0 }
+                    className="player__play-button"
+                    disabled={ this.state.disabled }
+                    onClick={ () => this.togglePlayBack() }
+                >{ this.state.playing ? '[]' : '>' }</button>
+                <button
+                    type="button"
+                    className="player__transport-button"
+                    disabled={ this.state.disabled || this.state.measure === 0 }
                     onClick={ () => this.goToPreviousMeasure() }
                 >&#171;</button>
                 <div className="player__position">{ this.state.measure + 1 }:{ this.state.beat + 1 }:1</div>
                 <button
                     type="button"
-                    className="button"
-                    disabled={ this.state.measure === this.total - 1 }
+                    className="player__transport-button"
+                    disabled={ this.state.disabled || this.state.measure === this.total - 1 }
                     onClick={ () => this.goToNextMeasure() }
                 >&#187;</button>
             </div>
