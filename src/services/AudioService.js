@@ -28,6 +28,7 @@ const initializeCallbacks = [];
 let initialized = false;
 const parts = [];
 let sequence = null;
+let limiter = null;
 let synth = null;
 let notes = [];
 
@@ -83,9 +84,16 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
 
     reset();
 
-    // create an FM synth for playback
+    // lazily create a limiter
 
-    synth = new Tone.PolySynth( Tone.FMSynth ).toDestination();
+    if ( !limiter ) {
+        limiter = new Tone.Limiter( -20 ).toDestination();
+    }
+
+    // create a polyphonic synthesizer for playback
+
+    synth = new Tone.PolySynth( Tone.AMSynth ).connect( limiter );
+    synth.set({ harmonicity: 2 });
 
     // prepare notes for playback in tone.js
 
