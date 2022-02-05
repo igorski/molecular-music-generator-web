@@ -39,6 +39,7 @@ import "./styles/_mixins.scss";
 function App() {
 
     const [ data, setData ] = useState( DEFAULT_COMPOSITION );
+    const [ hasChanges, setHasChanges ] = useState( true );
     const [ composition, setComposition ] = useState( null );
     const [ midi, setMidi ] = useState( null );
 
@@ -47,6 +48,7 @@ function App() {
     const generateComposition = optComposition => {
         try {
             setComposition( createComposition( optComposition || data ));
+            setHasChanges( false );
         } catch ( error ) {
             toast( `Error "${error}" occurred during generation of composition. Please verify input parameters and try again.` );
         }
@@ -54,24 +56,28 @@ function App() {
 
     // directly generate MIDI once composition has been created
 
-    useEffect( async () => {
-        try {
-            if ( composition ) {
-                composition && setMidi( await createMIDI( composition ));
+    useEffect( () => {
+        async function generateMIDI() {
+            try {
+                if ( composition ) {
+                    composition && setMidi( await createMIDI( composition ));
+                }
+            } catch ( error ) {
+                toast( `Error "${error}" occurred during generation of MIDI file. Please verify input parameters and try again.` );
             }
-        } catch ( error ) {
-            toast( `Error "${error}" occurred during generation of MIDI file. Please verify input parameters and try again.` );
-
         }
+        generateMIDI();
     }, [ composition ]);
 
 
     const handleChange = data => {
         setData( data );
+        setHasChanges( true );
     };
 
     const handleCompositionSelect = song => {
         setData( song );
+        setHasChanges( false );
         generateComposition( song );
     };
 
@@ -100,6 +106,7 @@ function App() {
                     <button
                         type="submit"
                         className="app__actions-button"
+                        disabled={ !hasChanges }
                         onClick={ () => generateComposition() }
                     >Generate</button>
                     <button
