@@ -69,8 +69,9 @@ export const createComposition = ( props ) => {
 
     // create patterns from all available pitches
 
-    const WHOLE_NOTE   = getMeasureDurationInSeconds( out.tempo, out.beatAmount );
-    const QUARTER_NOTE = WHOLE_NOTE / 4;
+    const MEASURE = getMeasureDurationInSeconds( out.tempo, out.beatAmount );
+    const BEAT    = MEASURE / out.beatUnit;
+    const PATTERN_LENGTH = Math.ceil( props.patternLength / out.beatUnit );
 
     let currentPattern = new Pattern( notes, 0, currentPosition );
 
@@ -91,8 +92,8 @@ export const createComposition = ( props ) => {
         // create new note
 
         const note = new Note(
-            pitch.note, pitch.octave, currentPosition, noteLength * QUARTER_NOTE,
-            Math.floor( currentPosition / WHOLE_NOTE )
+            pitch.note, pitch.octave, currentPosition, noteLength * BEAT,
+            Math.floor( currentPosition / MEASURE )
         );
 
         // add note to list (so it can be re-added in next iterations)
@@ -106,7 +107,7 @@ export const createComposition = ( props ) => {
 
         // pattern switch ? make it so (this starts the interleaving of the notes and thus, the magic!)
 
-        if (( currentBarLength / WHOLE_NOTE ) >= props.patternLength ) {
+        if (( currentBarLength / MEASURE ) >= PATTERN_LENGTH ) {
             patterns.push( currentPattern );
 
             // store current notes in new pattern
@@ -143,7 +144,7 @@ export const createComposition = ( props ) => {
                 track.notes.push({
                     ...note,
                     offset,
-                    measure : Math.floor( offset / WHOLE_NOTE )
+                    measure : Math.floor( offset / MEASURE )
                 });
             }
             patternLength += pattern.getRangeLength();

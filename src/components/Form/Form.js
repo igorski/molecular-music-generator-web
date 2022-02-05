@@ -88,7 +88,7 @@ export default function Form({ formData, onChange }) {
                                 onChange={ e => handleChange( "scale", e.target.value ) }
                             />
                         </div>
-                        <p class="form__expl">Enter your scale notes, separating them using commas.</p>
+                        <p className="form__expl">Enter your scale notes, separating them using commas.</p>
                     </fieldset>
                     <fieldset className="form__fieldset">
                         <legend>MIDI export options</legend>
@@ -148,6 +148,7 @@ export default function Form({ formData, onChange }) {
                                 onChange={ e => handleChange( "patternAmount", asFloat( e.target.value )) }
                             />
                         </div>
+                        <p className="form__expl">Note: all lengths above are defined in <i>beats</i>, relative to the time signatures <i>denominator</i> (lower number).</p>
                     </fieldset>
                     <fieldset className="form__fieldset">
                         <legend>Octave range</legend>
