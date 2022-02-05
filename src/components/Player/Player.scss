@@ -5,17 +5,19 @@
     display: inline-block;
 
     &__transport-button {
-        @include button();
         display: inline-block;
-
-        @include large() {
-            margin: 0;
-        }
+        margin-right: 0 !important;
     }
 
-    &__play-button {
+    &__play-button,
+    &__transport-button {
         @include button();
-        margin-right: $spacing-small;
+        padding: 6px $spacing-small;
+
+        img {
+            width: 22px;
+            vertical-align: middle;
+        }
     }
 
     &__position {
@@ -24,7 +26,7 @@
         text-align: center;
         width: 60px;
         padding: $spacing-xsmall 0;
-        background-color: $color-4;
+        background-color: $color-5;
 
         @include mobile() {
             display: none;

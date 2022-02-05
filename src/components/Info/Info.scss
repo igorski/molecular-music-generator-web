@@ -53,7 +53,7 @@
 
     &__container {
         @include scrollablePanel();
-        padding: 0 $spacing-large $spacing-medium;
+        padding: $spacing-small $spacing-large $spacing-medium;
         background-color: $color-5;
         color: $color-text;
 

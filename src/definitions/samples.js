@@ -57,7 +57,7 @@ export const COMPOSITIONS = [
     {
         ...DEFAULT_COMPOSITION,
         name: "4E3",
-        description: "By Duncan Lockerby. C major starting on E.",
+        description: "By Duncan Lockerby, as explained in his video. C major starting on E.",
         scale: "E,F,G,A,B,C,D",
         note1Length: 4,
         note2Length: 3,
@@ -72,6 +72,15 @@ export const COMPOSITIONS = [
     },
     {
         ...DEFAULT_COMPOSITION,
+        name: "11.5 B 4",
+        description: "By Duncan Lockerby. C major starting on B.",
+        tempo: 240,
+        scale: "B,C,D,E,F,G,A",
+        note1Length: 11.5,
+        note2Length: 4,
+    },
+    {
+        ...DEFAULT_COMPOSITION,
         name: "9 C 14.5",
         description: "By Duncan Lockerby",
         tempo: 220,
@@ -79,4 +88,28 @@ export const COMPOSITIONS = [
         note1Length: 9,
         note2Length: 14.5,
     },
+    {
+        ...DEFAULT_COMPOSITION,
+        name: "Diminished scale in 5/8",
+        description: "The input used by Drosophelia for the song \"Vexed\", where each pattern was processed by a separate lo-fi synth.",
+        timeSigBeatAmount: 5,
+        timeSigBeatUnit: 8,
+        tempo: 165,
+        scale: "E,F,G,G#,A#,B,C#,D",
+        note1Length: 6,
+        note2Length: 1,
+        patternLength: 8,
+        patternAmount: 16,
+    },
+    {
+        ...DEFAULT_COMPOSITION,
+        name: "Enigmatic scale",
+        description: "The input used by Drosophelia for the song \"6581\", where each pattern was played through a separate Commodore 64.",
+        tempo: 96,
+        scale: "C,C#,G#,E,F#,B,G#",
+        note1Length: 1.5,
+        note2Length: 4,
+        patternLength: 8,
+        patternAmount: 18,
+    }
 ];

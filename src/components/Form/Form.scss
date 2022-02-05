@@ -34,13 +34,11 @@
     }
 
     &__fieldset {
-        $fieldsetBg: $color-1;
         color: $color-2;
         border: 1px dashed $color-3;
         border-radius: $spacing-small;
         padding: $spacing-large;
         margin-bottom: $spacing-medium;
-        //background-color: $fieldsetBg;
 
         legend {
             @include customFont();
@@ -48,7 +46,7 @@
             border-radius: $spacing-small;
             border-top: none;
             border-bottom: none;
-            background-color: $fieldsetBg;
+            background-color: $color-1;
             padding: $spacing-xsmall $spacing-medium;
             margin-left: -$spacing-medium;
         }

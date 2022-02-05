@@ -92,20 +92,20 @@ export default class Player extends Component {
                     className="player__play-button"
                     disabled={ this.state.disabled }
                     onClick={ () => this.togglePlayBack() }
-                >{ this.state.playing ? '[]' : '>' }</button>
+                ><img alt="toggle playback" src={ `./icons/icon-${this.state.playing ? "pause" : "play"}.svg` } /></button>
                 <button
                     type="button"
                     className="player__transport-button"
                     disabled={ this.state.disabled || this.state.measure === 0 }
                     onClick={ () => this.goToPreviousMeasure() }
-                >&#171;</button>
+                ><img alt="rewind one measure" src="./icons/icon-rewind.svg" /></button>
                 <div className="player__position">{ this.state.measure + 1 }:{ this.state.beat + 1 }:1</div>
                 <button
                     type="button"
                     className="player__transport-button"
                     disabled={ this.state.disabled || this.state.measure === this.total - 1 }
                     onClick={ () => this.goToNextMeasure() }
-                >&#187;</button>
+                ><img alt="fast forward one measure" src="./icons/icon-forward.svg" /></button>
             </div>
         );
     }

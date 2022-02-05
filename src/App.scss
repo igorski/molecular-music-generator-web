@@ -75,6 +75,12 @@ $headerHeight: #{$titleHeight + $actionsHeight};
             color: $color-3;
         }
 
+        &-ui {
+            justify-content: center;
+            display: flex;
+            align-items: center;
+        }
+
         &-button {
             @include button();
         }
@@ -95,8 +101,17 @@ $headerHeight: #{$titleHeight + $actionsHeight};
         }
 
         @include mobile() {
-            padding: 0 $spacing-medium $spacing-small;
+            padding: 0 $spacing-medium 0;
             margin-top: $spacing-medium;
+        }
+    }
+
+    &__footer {
+        text-align: center;
+        color: $color-text;
+
+        @include mobile() {
+            padding-bottom: $spacing-small;
         }
     }
 }
