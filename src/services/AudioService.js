@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-import * as Tone from "tone";
 import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 
 const initializeCallbacks = [];
+let Tone;
 let initialized = false;
 const parts = [];
 let sequence = null;
@@ -37,7 +37,8 @@ let notes = [];
  * In this method we will automatically start the context when any
  * kind of interaction has occurred in the document.
  */
-export const init = () => {
+export const init = async () => {
+    Tone = await import( "tone" );
     const events = [ "click", "touchstart", "keydown" ];
     const handler = async () => {
         await Tone.start();
