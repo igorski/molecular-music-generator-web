@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-import midiWriter from "midi-writer-js";
 import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 
-export const createMIDI = composition => {
+export const createMIDI = async composition => {
 
+    const midiWriter = await import( "midi-writer-js" );
     const midiTracks = [];
 
     composition.tracks.forEach(({ name }) => {

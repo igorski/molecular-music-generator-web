@@ -54,10 +54,10 @@ function App() {
 
     // directly generate MIDI once composition has been created
 
-    useEffect(() => {
+    useEffect( async () => {
         try {
             if ( composition ) {
-                composition && setMidi( createMIDI( composition ));
+                composition && setMidi( await createMIDI( composition ));
             }
         } catch ( error ) {
             toast( `Error "${error}" occurred during generation of MIDI file. Please verify input parameters and try again.` );
