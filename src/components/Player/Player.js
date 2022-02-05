@@ -40,6 +40,20 @@ export default class Player extends Component {
         };
     }
 
+    componentDidMount() {
+        this._keyHandler = e => {
+            if ( e.keyCode === 32 && this.props.composition ) {
+                e.preventDefault();
+                this.togglePlayBack();
+            }
+        };
+        document.body.addEventListener( "keydown", this._keyHandler );
+    }
+
+    componentWillUnmount() {
+        document.body.removeEventListener( "keydown", this._keyHandler );
+    }
+
     componentDidUpdate( prevProps ) {
         if ( this.props.composition === prevProps.composition ) {
             return;
