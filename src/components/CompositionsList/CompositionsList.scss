@@ -20,15 +20,14 @@
         flex-direction: column;
         margin: 0;
         padding: 0;
-        @include scrollablePanel( 20px ); // minus title height
-        border: 1px solid $color-4;
-        border-right: none;
+        @include scrollablePanel();
         border-top-left-radius: $spacing-medium;
+        background-color: $color-5;
     }
 
     &__entry {
         cursor: pointer;
-        padding: 0 $spacing-large;
+        padding: $spacing-small $spacing-large 0;
         border-bottom: 1px dotted $color-4;
 
         &-title {
@@ -37,11 +36,16 @@
 
         &-description {
             margin-top: $spacing-small;
+            color: $color-text;
         }
 
         &--active {
             background-color: $color-1;
             color: $color-4;
+
+            .compositions-list__entry-description {
+                color: $color-4;
+            }
         }
     }
 }

@@ -5,21 +5,58 @@
         flex: 0.7;
 
         &__container {
+            @include scrollablePanel();
             display: flex;
+            flex-wrap: wrap;
+            padding: $spacing-medium $spacing-medium 0;
+            background-color: $color-5;
+            border-left: 1px dashed $color-background;
+            border-right: 1px dashed $color-background;
+            border-bottom: 1px solid $color-5;
+            background-image: linear-gradient(to bottom, $color-5, $color-background);
         }
 
         &__section {
             vertical-align: top;
             flex: 0.5;
-            margin-right: $spacing-small;
+
+            &:first-of-type {
+                margin-right: $spacing-small;
+            }
+        }
+    }
+
+    &__header {
+        &-title {
+            font-size: 100%;
+            margin: 0 0 $spacing-medium $spacing-medium;
         }
     }
 
     &__fieldset {
-        border: 2px dashed $color-4;
+        $fieldsetBg: $color-1;
+        color: $color-2;
+        border: 1px dashed $color-3;
         border-radius: $spacing-small;
         padding: $spacing-large;
         margin-bottom: $spacing-medium;
+        //background-color: $fieldsetBg;
+
+        legend {
+            @include customFont();
+            border: 1px solid $color-3;
+            border-radius: $spacing-small;
+            border-top: none;
+            border-bottom: none;
+            background-color: $fieldsetBg;
+            padding: $spacing-xsmall $spacing-medium;
+            margin-left: -$spacing-medium;
+        }
+
+        label {
+            font-size: 90%;
+            color: $color-text;
+        }
     }
 
     &__wrapper {
@@ -49,6 +86,10 @@
         &--padded-top {
             margin-top: $spacing-medium;
         }
+    }
+
+    &__expl {
+        color: $color-text;
     }
 
     &__time-signature-divider {

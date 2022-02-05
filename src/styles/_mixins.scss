@@ -75,11 +75,8 @@
     border-radius: 50%;
 }
 
-@mixin scrollablePanel( $optMargin: 0px ) {
-    height: calc(100vh - 230px);
+@mixin scrollablePanel() {
+    height: calc(100vh - 200px);
     overflow-y: auto;
-
-    @media (max-height: #{$tablet-height}) {
-        height: calc(410px - #{$optMargin});
-    }
+    box-sizing: border-box;
 }

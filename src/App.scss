@@ -1,7 +1,9 @@
 @import "./styles/_mixins";
 @import "./styles/typography";
 
+$titleHeight: 66px;
 $actionsHeight: 55px;
+$headerHeight: #{$titleHeight + $actionsHeight};
 
 .app {
     height: 100%;
@@ -9,48 +11,43 @@ $actionsHeight: 55px;
     font-size: 16px;
     color: white;
 
-    &__title {
+    &__header {
+        position: fixed;
+        width: 100%;
+        height: $headerHeight;
+        top: 0;
+        left: 0;
+        z-index: 1;
         background-color: $color-4;
-        color: $color-1;
-        text-indent: $spacing-medium;
-        padding: $spacing-large $spacing-medium;
         box-sizing: border-box;
-        margin: 0;
-
-        @include mobile() {
-            padding: $spacing-small $spacing-large;
-            font-size: 150%;
-        }
     }
 
-    &__wrapper {
+    &__title {
         max-width: $app-width;
-        height: 100%;
         margin: 0 auto;
-    }
+        padding: $spacing-small;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-    &__container {
-        padding-bottom: $actionsHeight;
-
-        @include large() {
-            display: flex;
+        @include lessThanIdeal() {
             justify-content: center;
-            margin-top: $spacing-large;
         }
 
-        @include mobile() {
-            padding: 0 $spacing-medium $actionsHeight;
-            margin-top: $spacing-medium;
+        &-logo {
+            height: 50px;
+        }
+
+        &-text {
+            color: #FFF;
+            margin: 0 $spacing-medium 0 0;
+            font-size: 125%;
         }
     }
 
     &__actions {
-        position: fixed;
-        z-index: 1;
-        width: 100%;
         height: $actionsHeight;
-        bottom: 0;
-        border-top: 3px solid $color-1;
+        border-bottom: 1px solid $color-5;
         background-color: $color-4;
         padding: $spacing-small $spacing-medium;
         box-sizing: border-box;
@@ -59,15 +56,47 @@ $actionsHeight: 55px;
             max-width: $app-width;
             margin: 0 auto;
 
-            @include mobile() {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
+            @include lessThanIdeal() {
+                text-align: center;
+
+                .app__actions-descr {
+                    display: none;
+                }
             }
+
+            @include ideal() {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        &-descr {
+            color: $color-3;
         }
 
         &-button {
             @include button();
+        }
+    }
+
+    &__wrapper {
+        max-width: $app-width;
+        height: 100%;
+        margin: 0 auto;
+        padding-top: $headerHeight;
+    }
+
+    &__container {
+        @include large() {
+            display: flex;
+            justify-content: center;
+            margin-top: $spacing-large;
+        }
+
+        @include mobile() {
+            padding: 0 $spacing-medium $spacing-small;
+            margin-top: $spacing-medium;
         }
     }
 }

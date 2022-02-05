@@ -1,12 +1,8 @@
 @import "../../styles/_mixins";
 
 .info {
-    margin-top: $spacing-small;
-    border-bottom-right-radius: $spacing-medium;
-    background-color: $color-4;
-
     &--opened {
-        .info__panel {
+        .info__content {
             display: block;
             background-color: $color-4;
             overflow-y: scroll;
@@ -14,9 +10,12 @@
     }
 
     @include ideal() {
-        @include scrollablePanel();
         flex: 0.3;
-        border: 1px solid $color-4;
+    }
+
+    &__title {
+        font-size: 100%;
+        margin-top: 0;
     }
 
     &__toggle-button {
@@ -29,23 +28,19 @@
             display: none !important;
         }
         position: fixed;
-        top: $spacing-small;
-        right: $spacing-small;
+        top: $spacing-medium;
+        right: $spacing-medium;
         margin-right: 0 !important;
         z-index: 3;
     }
 
-    &__panel {
-        padding: 0 $spacing-large $spacing-medium;
-        box-sizing: border-box;
-
-        ul {
-            padding: 0 0 0 $spacing-medium;
+    @include lessThanIdeal() {
+        &__title {
+            display: none;
         }
 
-        // on tablets and below, the panel isn't visible until its toggled
-
-        @include lessThanIdeal() {
+        // on tablets and below, the content isn't visible until its toggled
+        &__content {
             display: none;
             position: fixed;
             top: 0;
@@ -53,6 +48,29 @@
             width: 100%;
             height: 100%;
             z-index: 2;
+        }
+    }
+
+    &__container {
+        @include scrollablePanel();
+        padding: 0 $spacing-large $spacing-medium;
+        background-color: $color-5;
+        color: $color-text;
+
+        ul {
+            padding: 0 0 0 $spacing-medium;
+        }
+
+        li {
+            margin-bottom: $spacing-small;
+        }
+
+        @include ideal() {
+            border-bottom-right-radius: $spacing-medium;
+        }
+
+        @include lessThanIdeal() {
+            height: 100%;
         }
     }
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import { getCompositionName } from "../../utils/StringUtil";
 import "./Form.scss";
 
 export default function Form({ formData, onChange }) {
@@ -39,6 +40,9 @@ export default function Form({ formData, onChange }) {
 
     return (
         <form className="form" onSubmit={ e => e.nativeEvent.preventDefault() }>
+            <div className="form__header">
+                <h2 className="form__header-title">{ getCompositionName( data ) }</h2>
+            </div>
             <div className="form__container">
                 <section className="form__section">
                     <fieldset className="form__fieldset">
@@ -84,8 +88,10 @@ export default function Form({ formData, onChange }) {
                                 onChange={ e => handleChange( "scale", e.target.value ) }
                             />
                         </div>
+                        <p class="form__expl">Enter your scale notes, separating them using commas.</p>
                     </fieldset>
                     <fieldset className="form__fieldset">
+                        <legend>MIDI export options</legend>
                         <div className="form__wrapper">
                             <label htmlFor="utpp">Pattern to unique track</label>
                             <input

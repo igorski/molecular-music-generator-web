@@ -7,7 +7,10 @@
     &__transport-button {
         @include button();
         display: inline-block;
-        margin: 0;
+
+        @include large() {
+            margin: 0;
+        }
     }
 
     &__play-button {
@@ -22,5 +25,9 @@
         width: 60px;
         padding: $spacing-xsmall 0;
         background-color: $color-4;
+
+        @include mobile() {
+            display: none;
+        }
     }
 }

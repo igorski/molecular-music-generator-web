@@ -31,6 +31,7 @@ import { DEFAULT_COMPOSITION } from "./definitions/samples";
 import { createComposition } from "./services/CompositionService";
 import { createMIDI } from "./services/MidiService";
 import { saveAsFile } from "./services/FileService";
+import { getCompositionName } from "./utils/StringUtil";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.scss";
@@ -82,15 +83,39 @@ function App() {
     };
 
     const downloadMIDI = () => {
-        const notes = data.scale.split( "," ).map( note => note.trim() );
-        const fileName = `composition_${data.note1Length}${notes[ 0 ]}${data.note2Length}.mid`;
+        const fileName = `composition_${getCompositionName( data )}.mid`;
         saveAsFile( midi, fileName );
         toast( `MIDI file "${fileName}" generated successfully.` );
     };
 
     return (
         <div className="app">
-            <h1 className="app__title">Molecular Music Generator</h1>
+            <header className="app__header">
+                <div className="app__title">
+                    <img src="./logo512.png" className="app__title-logo" alt="Molecular Music Generator logo" />
+                    <h1 className="app__title-text">Molecular Music Generator</h1>
+                </div>
+                <div className="app__actions">
+                    <div className="app__actions-container">
+                        <div className="app__actions-descr">Generate/select a composition and press play / the spacebar to toggle playback</div>
+                        <div className="app__actions-ui">
+                            <button
+                                type="submit"
+                                className="app__actions-button"
+                                disabled={ !hasChanges }
+                                onClick={ () => generateComposition() }
+                            >Generate</button>
+                            <button
+                                type="button"
+                                className="app__actions-button"
+                                disabled={ midi === null }
+                                onClick={ downloadMIDI }
+                            >Export MIDI</button>
+                            <Player composition={ composition } />
+                        </div>
+                    </div>
+                </div>
+            </header>
             <div className="app__wrapper">
                 <div className="app__container">
                     <CompositionsList
@@ -99,23 +124,6 @@ function App() {
                     />
                     <Form formData={ data } onChange={ handleChange } />
                     <Info />
-                </div>
-            </div>
-            <div className="app__actions">
-                <div className="app__actions-container">
-                    <button
-                        type="submit"
-                        className="app__actions-button"
-                        disabled={ !hasChanges }
-                        onClick={ () => generateComposition() }
-                    >Generate</button>
-                    <button
-                        type="button"
-                        className="app__actions-button"
-                        disabled={ midi === null }
-                        onClick={ downloadMIDI }
-                    >Export MIDI</button>
-                    <Player composition={ composition } />
                 </div>
             </div>
             <ToastContainer hideProgressBar autoClose={2500} />
