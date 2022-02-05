@@ -1,31 +1,31 @@
 @import "../../styles/_mixins";
 
 .info {
-    border-radius: $spacing-small;
     margin-top: $spacing-small;
-    background-color: $color-2;
+    border-bottom-right-radius: $spacing-medium;
+    background-color: $color-4;
 
     &--opened {
         .info__panel {
             display: block;
-            background-color: $color-2;
+            background-color: $color-4;
             overflow-y: scroll;
         }
     }
 
-    @include large() {
+    @include ideal() {
+        @include scrollablePanel();
         flex: 0.3;
-        height: 410px;
-        overflow-y: auto;
+        border: 1px solid $color-4;
     }
 
     &__toggle-button {
 
         @include roundButton();
 
-        // toggle button is only visible on mobile, to toggle info visibility
+        // toggle button is only visible on tablet size and below, to toggle info visibility
 
-        @include large() {
+        @include ideal() {
             display: none !important;
         }
         position: fixed;
@@ -38,15 +38,14 @@
     &__panel {
         padding: 0 $spacing-large $spacing-medium;
         box-sizing: border-box;
-        color: $color-4;
 
         ul {
             padding: 0 0 0 $spacing-medium;
         }
 
-        // on mobile the panel isn't visible until its toggled
+        // on tablets and below, the panel isn't visible until its toggled
 
-        @include mobile() {
+        @include lessThanIdeal() {
             display: none;
             position: fixed;
             top: 0;

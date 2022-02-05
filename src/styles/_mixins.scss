@@ -10,9 +10,24 @@
     }
 }
 
-// anything above phone resolution (e.g. tablet/laptop/desktop)
+// anything above phone resolution (e.g. tablet)
 @mixin large {
     @media (min-width: #{$mobile-width}) {
+        @content;
+    }
+}
+
+// anything above tablet resolution (e.g. laptop/desktop)
+@mixin ideal {
+    @media (min-width: #{$app-width}) {
+        @content;
+    }
+}
+
+// anything below the ideal resolution
+
+@mixin lessThanIdeal {
+    @media (max-width: #{$app-width}) {
         @content;
     }
 }
@@ -58,4 +73,13 @@
 @mixin roundButton() {
     @include button();
     border-radius: 50%;
+}
+
+@mixin scrollablePanel( $optMargin: 0px ) {
+    height: calc(100vh - 230px);
+    overflow-y: auto;
+
+    @media (max-height: #{$tablet-height}) {
+        height: calc(410px - #{$optMargin});
+    }
 }

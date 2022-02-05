@@ -23,9 +23,11 @@
 */
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import CompositionsList from "./components/CompositionsList/CompositionsList";
 import Form from "./components/Form/Form";
 import Info from "./components/Info/Info";
 import Player from "./components/Player/Player";
+import { DEFAULT_COMPOSITION } from "./definitions/samples";
 import { createComposition } from "./services/CompositionService";
 import { createMIDI } from "./services/MidiService";
 import { saveAsFile } from "./services/FileService";
@@ -36,27 +38,15 @@ import "./styles/_mixins.scss";
 
 function App() {
 
-    const [ data, setData ] = useState({
-        timeSigBeatAmount: 4,
-        timeSigBeatUnit  : 4,
-        tempo: 120,
-        scale: "C, D, D#, F, G, G#, A#",
-        note1Length: 2,
-        note2Length: 0.5,
-        patternLength: 4,
-        patternAmount: 8,
-        octaveLower: 2,
-        octaveUpper: 7,
-        uniqueTrackPerPattern: false
-    });
+    const [ data, setData ] = useState( DEFAULT_COMPOSITION );
     const [ composition, setComposition ] = useState( null );
     const [ midi, setMidi ] = useState( null );
 
-    // directly generate composition once data has been submitted
+    // directly generate composition once data has been submitted (or on request)
 
-    const generateComposition = () => {
+    const generateComposition = optComposition => {
         try {
-            setComposition( createComposition( data ));
+            setComposition( createComposition( optComposition || data ));
         } catch ( error ) {
             toast( `Error "${error}" occurred during generation of composition. Please verify input parameters and try again.` );
         }
@@ -80,8 +70,14 @@ function App() {
         setData( data );
     };
 
+    const handleCompositionSelect = song => {
+        setData( song );
+        generateComposition( song );
+    };
+
     const downloadMIDI = () => {
-        const fileName = `composition_${Date.now()}.mid`;
+        const notes = data.scale.split( "," ).map( note => note.trim() );
+        const fileName = `composition_${data.note1Length}${notes[ 0 ]}${data.note2Length}.mid`;
         saveAsFile( midi, fileName );
         toast( `MIDI file "${fileName}" generated successfully.` );
     };
@@ -90,22 +86,30 @@ function App() {
         <div className="app">
             <h1 className="app__title">Molecular Music Generator</h1>
             <div className="app__wrapper">
-                <Form formData={ data } onChange={ handleChange } />
-                <Info />
+                <div className="app__container">
+                    <CompositionsList
+                        selected={ data && data.name }
+                        onSelect={ handleCompositionSelect }
+                    />
+                    <Form formData={ data } onChange={ handleChange } />
+                    <Info />
+                </div>
             </div>
             <div className="app__actions">
-                <button
-                    type="submit"
-                    className="app__actions-button"
-                    onClick={ generateComposition }
-                >Generate</button>
-                <button
-                    type="button"
-                    className="app__actions-button"
-                    disabled={ midi === null }
-                    onClick={ downloadMIDI }
-                >Export MIDI</button>
-                <Player composition={ composition } />
+                <div className="app__actions-container">
+                    <button
+                        type="submit"
+                        className="app__actions-button"
+                        onClick={ () => generateComposition() }
+                    >Generate</button>
+                    <button
+                        type="button"
+                        className="app__actions-button"
+                        disabled={ midi === null }
+                        onClick={ downloadMIDI }
+                    >Export MIDI</button>
+                    <Player composition={ composition } />
+                </div>
             </div>
             <ToastContainer hideProgressBar autoClose={2500} />
         </div>

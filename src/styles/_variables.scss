@@ -1,7 +1,9 @@
 /* application variables */
 
-$app-width: 960px;
+$app-width: 1200px;
+$tablet-width: 990px; // tablet cut off point
 $mobile-width: 685px; // the threshold below which we start to use the mobile view
+$tablet-height: 640px; // cut off point for app height on tablet size
 
 $spacing-xxsmall: 2px;
 $spacing-xsmall: 4px;

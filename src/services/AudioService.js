@@ -93,7 +93,22 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
     // create a polyphonic synthesizer for playback
 
     synth = new Tone.PolySynth( Tone.AMSynth ).connect( limiter );
-    synth.set({ harmonicity: 2 });
+    synth.set({
+        harmonicity : 2,
+        volume      : 0.7,
+        envelope: {
+            attack  : 0,
+            decay   : 0.5,
+            sustain : 0.5,
+            release : 0
+        },
+        modulateEnvelope: {
+            attack  : 0,
+            decay   : 0.5,
+            sustain : 0.5,
+            release : 0
+        }
+    });
 
     // prepare notes for playback in tone.js
 

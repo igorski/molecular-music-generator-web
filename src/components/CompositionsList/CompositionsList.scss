@@ -1,0 +1,47 @@
+@import "../../styles/_mixins";
+
+.compositions-list {
+    @include large() {
+        flex: 0.3;
+    }
+
+    @include mobile() {
+        display: none; // TODO
+    }
+
+    &__title {
+        font-size: 100%;
+        margin: 0 0 $spacing-medium $spacing-medium;
+    }
+
+    &__container {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        @include scrollablePanel( 20px ); // minus title height
+        border: 1px solid $color-4;
+        border-right: none;
+        border-top-left-radius: $spacing-medium;
+    }
+
+    &__entry {
+        cursor: pointer;
+        padding: 0 $spacing-large;
+        border-bottom: 1px dotted $color-4;
+
+        &-title {
+            margin: $spacing-small 0 0;
+        }
+
+        &-description {
+            margin-top: $spacing-small;
+        }
+
+        &--active {
+            background-color: $color-1;
+            color: $color-4;
+        }
+    }
+}
