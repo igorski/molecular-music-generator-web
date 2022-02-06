@@ -39,9 +39,10 @@ $headerHeight: #{$titleHeight + $actionsHeight};
         }
 
         &-text {
-            color: #FFF;
-            margin: 0 $spacing-medium 0 0;
-            font-size: 125%;
+            @include titleFont();
+            font-size: 150%;
+            color: #F6F6F6;
+            margin: $spacing-xxsmall 0 0;
         }
     }
 
