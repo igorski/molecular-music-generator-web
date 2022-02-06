@@ -6,7 +6,10 @@
 
     &__transport-button {
         display: inline-block;
-        margin-right: 0 !important;
+
+        &:last-of-type {
+            margin: 0 0 0 $spacing-small !important;
+        }
     }
 
     &__play-button,
@@ -25,11 +28,18 @@
         display: inline-block;
         text-align: center;
         width: 60px;
-        padding: $spacing-xsmall 0;
+        padding: $spacing-small 0;
         background-color: $color-5;
+        border-radius: $spacing-small;
+        vertical-align: middle;
 
         @include mobile() {
             display: none;
+        }
+
+        &--disabled {
+            background-color: #333;
+            color: #666;
         }
     }
 }

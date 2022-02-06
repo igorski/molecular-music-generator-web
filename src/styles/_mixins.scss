@@ -76,7 +76,7 @@
 }
 
 @mixin scrollablePanel() {
-    height: calc(100vh - 230px);
+    height: calc(100vh - 215px);
     overflow-y: auto;
     box-sizing: border-box;
 }

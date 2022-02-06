@@ -99,7 +99,9 @@ export default class Player extends Component {
                     disabled={ this.state.disabled || this.state.measure === 0 }
                     onClick={ () => this.goToPreviousMeasure() }
                 ><img alt="rewind one measure" src="./icons/icon-rewind.svg" /></button>
-                <div className="player__position">{ this.state.measure + 1 }:{ this.state.beat + 1 }:1</div>
+                <div
+                    className={ `player__position ${this.state.disabled ? "player__position--disabled" : "" }` }
+                >{ this.state.measure + 1 }:{ this.state.beat + 1 }:1</div>
                 <button
                     type="button"
                     className="player__transport-button"
