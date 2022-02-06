@@ -111,7 +111,7 @@ $headerHeight: #{$titleHeight + $actionsHeight};
         color: $color-text;
 
         @include mobile() {
-            padding-bottom: $spacing-small;
+            padding: 0 $spacing-small $spacing-small;
         }
     }
 }

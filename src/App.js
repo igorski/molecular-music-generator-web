@@ -128,7 +128,7 @@ function App() {
             </div>
             <div className="app__footer">
                 <p>
-                    This is a tool created by <a href="https://www.igorski.nl" title="igorski.nl website">igorski.nl</a>. Transport icons designed by&nbsp;
+                    This is an <a href="https://github.com/igorski/molecular-music-generator-web" title="Molecular Music Generator source code on GitHub" target="_blank" rel="noopener noreferrer">open source</a> tool by igorski.nl. Transport icons designed by&nbsp;
                     <a href="https://freeicons.io/profile/2257" alt="www.wishforge.games profile on Free Icons site" target="_blank" rel="noopener noreferrer">www.wishforge.games</a>&nbsp;
                     on <a href="https://freeicons.io" alt="Free Icons site" target="_blank" rel="noopener noreferrer">freeicons.io</a>.
                 </p>
