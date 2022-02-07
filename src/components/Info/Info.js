@@ -48,11 +48,11 @@ export default function Info( props ) {
         a pattern length needs to be defined, e.g. 4 bars</li>
                         <li>The algorithm will then function like so (keeping the above definitions in mind):</li>
                         <li>The first note of the scale (E) is played at the length of the first defined note length (4)</li>
-                        <li>Each time the duration of the played note has ended, the NEXT note in the scale (F) is played</li>
+                        <li>Each time the duration of the played note has ended, the next note in the scale (F) is played</li>
                         <li>Once the first pattern length has been reached (4 bars), a new pattern will start</li>
                         <li>The previously "recorded" pattern will loop its contents indefinitely while the new patterns are created / played</li>
                         <li>When a newly played note sounds simultaneously with another note from a PREVIOUS pattern, the note length will change (in above example from 4 to 3)</li>
-                        <li>This will be the new note length to use for ALL SUBSEQUENT added notes, until another simultaneously played note is found, leading it to switch back to the previous note length (in above example, back to 4)</li>
+                        <li>This will be the new note length to use for all subsequent added notes, until another simultaneously played note is found, leading it to switch back to the previous note length (in above example, back to 4)</li>
                         <li>As the pattern is now played over an existing one, it is likely that notes will be played in unison, leading to the switching of note length</li>
                         <li>As more patterns accumulate, a perfectly mathematical pattern of notes are weaving in and out of the notes of the other patterns</li>
                     </ul>

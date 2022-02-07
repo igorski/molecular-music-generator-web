@@ -7,8 +7,10 @@
     &__transport-button {
         display: inline-block;
 
-        &:last-of-type {
-            margin: 0 0 0 $spacing-small !important;
+        @include large() {
+            &:last-of-type {
+                margin: 0 0 0 $spacing-small !important;
+            }
         }
     }
 

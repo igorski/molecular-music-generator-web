@@ -58,10 +58,10 @@ export default class Player extends Component {
         if ( this.props.composition === prevProps.composition ) {
             return;
         }
+        this.setState({ disabled: false, measure: 0, beat: 0, sixteenth: 0 });
         setupCompositionPlayback( this.props.composition, ( measure, beat, sixteenth, total, time ) => {
             this.setState({ measure, beat, sixteenth, total, time });
         });
-        this.setState({ disabled: false });
         if ( this.state.playing ) {
             play();
         }
@@ -77,11 +77,11 @@ export default class Player extends Component {
     }
 
     goToPreviousMeasure() {
-        goToMeasure( this.state.measure - 1 );
+        this.setState({ ...goToMeasure( this.state.measure - 1 ) });
     }
 
     goToNextMeasure() {
-        goToMeasure( this.state.measure + 1 );
+        this.setState({ ...goToMeasure( this.state.measure + 1 ) });
     }
 
     render() {
