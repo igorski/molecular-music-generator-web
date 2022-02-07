@@ -50,10 +50,10 @@
 
         &:hover {
             background-color: $color-4;
-            color: $color-3;
+            color: #FFF;
 
             .compositions-list__entry-description {
-                color: $color-3;
+                color: $color-text;
             }
         }
     }
