@@ -47,5 +47,14 @@
                 color: $color-4;
             }
         }
+
+        &:hover {
+            background-color: $color-4;
+            color: $color-3;
+
+            .compositions-list__entry-description {
+                color: $color-3;
+            }
+        }
     }
 }
