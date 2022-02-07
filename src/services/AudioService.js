@@ -22,15 +22,20 @@
  * SOFTWARE.
 */
 import { getMeasureDurationInSeconds } from "../utils/AudioMath";
+import { getFrequency } from "../utils/PitchUtil";
 
 const initializeCallbacks = [];
 let Tone;
 let initialized = false;
 const parts = [];
+const envelopes = [];
+const oscillators = [];
 let sequence = null;
 let limiter = null;
-let synth = null;
+let comp = null;
 let notes = [];
+
+const MAX_POLYPHONY = 30;
 
 /**
  * AudioContext can only be started after a user interaction.
@@ -72,6 +77,8 @@ export const goToMeasure = measureNum => {
     stopPlayingParts();
     Tone.Transport.position = `${measureNum}:0:0`;
     enqueueNextMeasure( measureNum );
+
+    return { measure: measureNum, beat: 0, sixteenths: 0 };
 };
 
 /**
@@ -85,31 +92,12 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
 
     reset();
 
-    // lazily create a limiter
+    // lazily create a compressor and limiter to keep all levels in check
 
     if ( !limiter ) {
         limiter = new Tone.Limiter( -20 ).toDestination();
+        comp = new Tone.Compressor( -30, 3 ).connect( limiter );
     }
-
-    // create a polyphonic synthesizer for playback
-
-    synth = new Tone.PolySynth( Tone.AMSynth ).connect( limiter );
-    synth.set({
-        harmonicity : 2,
-        volume      : 0.7,
-        envelope: {
-            attack  : 0,
-            decay   : 0.5,
-            sustain : 0.5,
-            release : 0
-        },
-        modulateEnvelope: {
-            attack  : 0,
-            decay   : 0.5,
-            sustain : 0.5,
-            release : 0
-        }
-    });
 
     // prepare notes for playback in tone.js
 
@@ -119,10 +107,8 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
         .flatMap(({ notes }) => notes )
         .map( note => {
             return {
-                note     : `${note.note}${note.octave}`,
-                duration : note.duration,
-                offset   : note.offset - ( measureDuration * note.measure ),
-                measure  : note.measure
+                ...note,
+                offset : note.offset - ( measureDuration * note.measure ),
             };
     });
 
@@ -149,7 +135,6 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
 
 function reset() {
     stopPlayingParts();
-    synth?.disconnect();
     sequence?.stop();
     sequence?.dispose();
     Tone.Transport.stop();
@@ -160,16 +145,51 @@ function stopPlayingParts() {
         part.stop();
         part.dispose();
     }
+    for ( const envelope of envelopes ) {
+        envelope.dispose();
+    }
+    for ( const oscillator of oscillators ) {
+        oscillator.stop();
+        oscillator.dispose();
+    }
     parts.length = 0;
+    envelopes.length = 0;
+    oscillators.length = 0;
 }
 
 function enqueueNextMeasure( measureNum, delta = 0 ) {
-    const notesToEnqueue = notes.filter(({ measure }) => measure === measureNum );
+    // note we enqueue the notes in reverse as we want to cap max polyphony by
+    // excluding the oldest patterns
+    const notesToEnqueue = notes.filter(({ measure }) => measure === measureNum ).reverse();
     if ( !notesToEnqueue.length ) {
         return;
     }
+    if ( notesToEnqueue.length > MAX_POLYPHONY ) {
+        notesToEnqueue.splice( 0, MAX_POLYPHONY );
+    }
     parts.push( new Tone.Part(( time, value ) => {
-        synth.triggerAttackRelease( value.note, value.duration, time );
+
+        // we use simple envelopes and oscillators instead of the Tonejs synths
+        // as they suffer from max polyphony and performance issues on less powerful configurations
+
+        const envelope = new Tone.AmplitudeEnvelope({
+            attack: 0.05,
+            decay: 0.5,
+            sustain: 0.2,
+            release: 0.1
+        });
+        envelope.connect( comp );
+
+        const oscillator = new Tone.Oscillator(
+            getFrequency( value.note, value.octave ), "sawtooth19"
+        ).start( time ).stop( time + value.duration );
+
+        oscillator.connect( envelope )
+        envelope.triggerAttackRelease( value.duration, time );
+
+        oscillators.push( oscillator );
+        envelopes.push( envelope );
+
     }, notesToEnqueue.map( note => ({
         ...note,
         // use an array of objects as long as the object has a "time" attribute
