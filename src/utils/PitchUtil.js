@@ -22,6 +22,13 @@
  */
 
 /**
+ * order of note names within a single octave
+ *
+ * @type {Array<string>}
+ */
+export const OCTAVE_SCALE = [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ];
+
+/**
  * @param {string} aNote - musical note to return ( A, B, C, D, E, F, G with
  *               possible enharmonic notes ( 'b' meaning 'flat', '#' meaning 'sharp' )
  *               NOTE: flats are CASE sensitive ( to prevent seeing the note 'B' instead of 'b' )
@@ -69,13 +76,6 @@ export const getFrequency = ( aNote, aOctave ) => {
 };
 
 /* internal methods */
-
-/**
- * order of note names within a single octave
- *
- * @type {Array<string>}
- */
-const OCTAVE_SCALE = [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ];
 
 /**
  * pitch table for all notes from C to B at octave 4

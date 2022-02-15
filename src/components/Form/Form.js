@@ -21,7 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import scales from "../../definitions/scales.json";
+import { OCTAVE_SCALE } from "../../utils/PitchUtil";
 import { getCompositionName } from "../../utils/StringUtil";
+import SelectBox from "../UI/SelectBox";
 import "./Form.scss";
 
 export default function Form({ formData, onChange }) {
@@ -36,6 +39,43 @@ export default function Form({ formData, onChange }) {
     const handleChange = ( prop, value ) => {
         data[ prop ] = value;
         onChange( data );
+    };
+
+    /* scale related operations */
+
+    const notes = OCTAVE_SCALE.reduce(( acc, note ) => ({ ...acc, [ note ]: note }), {});
+
+    const handleNoteSelect = event => {
+        setNotes( event.target.value, data.scaleSelect.name );
+    };
+
+    const handleScaleSelect = event => {
+        setNotes( data.scaleSelect.note, event.target.value);
+    };
+
+    const setNotes = ( note, name ) => {
+        handleChange( "scaleSelect", { note, name });
+        const scaleIntervals = scales[ name ];
+        if ( !scaleIntervals ) {
+            return;
+        }
+        const scaleStart  = OCTAVE_SCALE.indexOf( data.scaleSelect.note );
+        const scaleLength = OCTAVE_SCALE.length;
+        handleChange( "scale", scaleIntervals.map( index => {
+            return OCTAVE_SCALE[( scaleStart + index ) % scaleLength ]
+        }).filter( Boolean ).join( "," ));
+    };
+
+    const shuffleScale = () => {
+        handleChange(
+            "scale",
+            data.scale.split( "," )
+                .filter( Boolean )
+                .map( value => ({ value, sort: Math.random() }))
+                .sort(( a, b ) => a.sort - b.sort)
+                .map(({ value }) => value.trim() )
+                .join( "," )
+        );
     };
 
     return (
@@ -81,14 +121,34 @@ export default function Form({ formData, onChange }) {
                     <fieldset className="form__fieldset">
                         <legend>Scale</legend>
                         <div className="form__wrapper">
+                            <SelectBox
+                                title="Root note"
+                                items={ notes }
+                                selected={ data.scaleSelect.note }
+                                onChange={ handleNoteSelect }
+                            />
+                            <SelectBox
+                                title="Scale"
+                                items={ scales }
+                                selected={ data.scaleSelect.name }
+                                onChange={ handleScaleSelect }
+                            />
+                        </div>
+                        <div className="form__wrapper">
                             <input
                                 type="text"
                                 className="full"
                                 value={ data.scale }
                                 onChange={ e => handleChange( "scale", e.target.value ) }
                             />
+                            <button
+                                type="button"
+                                className="form__button"
+                                onClick={ shuffleScale }
+                            >Shuffle</button>
                         </div>
-                        <p className="form__expl">Enter your scale notes, separating them using commas.</p>
+                        <p className="form__expl">Either select a root note and scale name or directly enter your
+                        scale notes in the input field, separating them using commas.</p>
                     </fieldset>
                     <fieldset className="form__fieldset">
                         <legend>MIDI export options</legend>

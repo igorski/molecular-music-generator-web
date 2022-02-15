@@ -97,6 +97,11 @@
         margin-top: $spacing-small;
     }
 
+    &__button {
+        @include button();
+        margin-left: $spacing-small;
+    }
+
     input[type=text],
     input[type=number] {
         border-radius: $spacing-small;

@@ -27,6 +27,7 @@ import CompositionsList from "./components/CompositionsList/CompositionsList";
 import Form from "./components/Form/Form";
 import Info from "./components/Info/Info";
 import Player from "./components/Player/Player";
+import scales from "./definitions/scales.json";
 import { DEFAULT_COMPOSITION } from "./definitions/samples";
 import { createComposition } from "./services/CompositionService";
 import { createMIDI } from "./services/MidiService";
@@ -37,9 +38,12 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.scss";
 import "./styles/_mixins.scss";
 
+// not part of the Composition model, but a data structure used to easily select a scale in the Form
+
 function App() {
 
-    const [ data, setData ] = useState( DEFAULT_COMPOSITION );
+    const [ data, setData ] = useState({ ...DEFAULT_COMPOSITION, scaleSelect: { note: "C", name: "" } });
+
     const [ hasChanges, setHasChanges ] = useState( true );
     const [ composition, setComposition ] = useState( null );
     const [ midi, setMidi ] = useState( null );
@@ -76,10 +80,10 @@ function App() {
         setHasChanges( true );
     };
 
-    const handleCompositionSelect = song => {
-        setData( song );
+    const handleCompositionSelect = composition => {
+        setData({ ...composition, scaleSelect: { note: "", name: "" } });
         setHasChanges( false );
-        generateComposition( song );
+        generateComposition( composition );
     };
 
     const downloadMIDI = () => {
