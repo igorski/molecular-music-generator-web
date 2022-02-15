@@ -103,7 +103,7 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
             mid  : 0,
             high : -10,
             lowFrequency  : 40,
-            highFrequency : 3500
+            highFrequency : 6000
         }).connect( comp );
     }
 
