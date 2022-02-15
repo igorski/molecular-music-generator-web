@@ -44,7 +44,7 @@ export default class Player extends Component {
         this._keyHandler = e => {
             if ( e.keyCode === 32 && this.props.composition ) {
                 e.preventDefault();
-                this.togglePlayBack();
+                this.togglePlayBack( true );
             }
         };
         document.body.addEventListener( "keydown", this._keyHandler );
@@ -67,11 +67,14 @@ export default class Player extends Component {
         }
     }
 
-    togglePlayBack() {
+    togglePlayBack( resetPosition = false ) {
         if ( !this.state.playing ) {
             play();
         } else {
             pause();
+        }
+        if ( resetPosition ) {
+            this.setState({ ...goToMeasure( 0 ) });
         }
         this.setState({ playing: !this.state.playing });
     }

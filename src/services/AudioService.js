@@ -32,6 +32,7 @@ const envelopes = [];
 const oscillators = [];
 let sequence = null;
 let limiter = null;
+let eq = null;
 let comp = null;
 let notes = [];
 
@@ -96,7 +97,14 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
 
     if ( !limiter ) {
         limiter = new Tone.Limiter( -20 ).toDestination();
-        comp = new Tone.Compressor( -30, 3 ).connect( limiter );
+        comp = new Tone.Compressor( -40, 3 ).connect( limiter );
+        eq = new Tone.EQ3({
+            low  : -3,
+            mid  : 0,
+            high : -10,
+            lowFrequency  : 40,
+            highFrequency : 3500
+        }).connect( comp );
     }
 
     // prepare notes for playback in tone.js
@@ -128,7 +136,7 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
         if ( beats === 0 && Math.floor( sixteenths ) === 0 ) {
             enqueueNextMeasure( bars );
         }
-    }, [ "C3" ],  measureDuration / composition.beatAmount ).start( 0 );
+    }, [ "C3" ], measureDuration / composition.beatAmount ).start( 0 );
 };
 
 /* internal methods */
@@ -141,20 +149,17 @@ function reset() {
 }
 
 function stopPlayingParts() {
-    for ( const part of parts ) {
-        part.stop();
-        part.dispose();
+    resetActors( parts );
+    resetActors( envelopes );
+    resetActors( oscillators );
+}
+
+function resetActors( actorList ) {
+    for ( const actor of actorList ) {
+        typeof actor.stop === "function" && actor.stop(); // envelope, oscillator
+        actor.dispose();
     }
-    for ( const envelope of envelopes ) {
-        envelope.dispose();
-    }
-    for ( const oscillator of oscillators ) {
-        oscillator.stop();
-        oscillator.dispose();
-    }
-    parts.length = 0;
-    envelopes.length = 0;
-    oscillators.length = 0;
+    actorList.length = 0;
 }
 
 function enqueueNextMeasure( measureNum, delta = 0 ) {
@@ -173,15 +178,15 @@ function enqueueNextMeasure( measureNum, delta = 0 ) {
         // as they suffer from max polyphony and performance issues on less powerful configurations
 
         const envelope = new Tone.AmplitudeEnvelope({
-            attack: 0.05,
-            decay: 0.5,
-            sustain: 0.2,
-            release: 0.1
+            attack  : 0.2,
+            decay   : 0.5,
+            sustain : 0.2,
+            release : 0.1
         });
-        envelope.connect( comp );
+        envelope.connect( eq );
 
         const oscillator = new Tone.Oscillator(
-            getFrequency( value.note, value.octave ), "sawtooth19"
+            getFrequency( value.note, value.octave ), "sawtooth"
         ).start( time ).stop( time + value.duration );
 
         oscillator.connect( envelope )
