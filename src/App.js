@@ -27,7 +27,6 @@ import CompositionsList from "./components/CompositionsList/CompositionsList";
 import Form from "./components/Form/Form";
 import Info from "./components/Info/Info";
 import Player from "./components/Player/Player";
-import scales from "./definitions/scales.json";
 import { DEFAULT_COMPOSITION } from "./definitions/samples";
 import { createComposition } from "./services/CompositionService";
 import { createMIDI } from "./services/MidiService";
