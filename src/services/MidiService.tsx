@@ -21,14 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import Composition from "../model/Composition";
 import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 
-export const createMIDI = async composition => {
+type MIDIWriterTrack = {
+    addEvent: Function,
+    setTempo: Function,
+    addTrackName: Function,
+    setTimeSignature: Function
+};
+type NoteEventDef = {
+    pitch: string,
+    duration: string,
+    startTick: number
+};
+type MIDIWriter = {
+    NoteEvent : new ( data: NoteEventDef ) => {},
+    Track     : new () => MIDIWriterTrack,
+    Writer    : new ( tracks: MIDIWriterTrack[] ) => { dataUri: () => string },
+};
 
-    const midiWriter = await import( "midi-writer-js" );
-    const midiTracks = [];
+export const createMIDI = async ( composition: Composition ): Promise<string> => {
 
-    composition.tracks.forEach(({ name }) => {
+    const midiWriter: MIDIWriter = ( await import( "midi-writer-js" ) as MIDIWriter );
+    const midiTracks: Array<MIDIWriterTrack> = [];
+
+    composition.patterns.forEach(({ name }) => {
         const track = new midiWriter.Track();
         track.setTempo( composition.tempo );
         track.addTrackName( name );
@@ -42,7 +60,7 @@ export const createMIDI = async composition => {
     const TICKS = ( 128 * composition.beatAmount ) / measureDuration; // ticks per measure
 
     // walk through all patterns
-    composition.tracks.forEach(( track, trackIndex ) => {
+    composition.patterns.forEach(( track, trackIndex ) => {
         const midiTrack = midiTracks[ trackIndex ];
         track.notes.forEach(({ note, octave, offset, duration }) => {
             midiTrack.addEvent(

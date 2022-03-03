@@ -23,10 +23,8 @@
 
 /**
  * order of note names within a single octave
- *
- * @type {Array<string>}
  */
-export const OCTAVE_SCALE = [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ];
+export const OCTAVE_SCALE: Array<string> = [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ];
 
 /**
  * @param {string} aNote - musical note to return ( A, B, C, D, E, F, G with
@@ -35,7 +33,7 @@ export const OCTAVE_SCALE = [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "
  * @param {number} aOctave - the octave to return ( accepted range 0 - 9 )
  * @return {number} containing exact frequency in Hz for requested note
  */
-export const getFrequency = ( aNote, aOctave ) => {
+export const getFrequency = ( aNote: string, aOctave: number ): number => {
     let freq;
     let enharmonic = 0;
 
@@ -80,10 +78,10 @@ export const getFrequency = ( aNote, aOctave ) => {
 /**
  * pitch table for all notes from C to B at octave 4
  * which is used for calculating all pitches at other octaves
- *
- * @type {Array<number>}
  */
-const OCTAVE = [ 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440, 466.164, 493.883 ];
+const OCTAVE: Array<number> = [
+    261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440, 466.164, 493.883
+];
 
 /**
  * retrieves the index in the octave array for a given note
@@ -94,7 +92,7 @@ const OCTAVE = [ 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 
  * @param {number=} aEnharmonic optional, defaults to 0 ( 0, -1 for flat, 1 for sharp )
  * @return {number}
  */
-function getOctaveIndex( aNote, aEnharmonic ) {
+function getOctaveIndex( aNote: string, aEnharmonic?: number ): number {
     if ( typeof aEnharmonic !== "number" ) {
         aEnharmonic = 0;
     }

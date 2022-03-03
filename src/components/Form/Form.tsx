@@ -21,23 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import { ScaledCompositionSource } from "../../interfaces/CompositionSource";
 import scales from "../../definitions/scales.json";
 import { OCTAVE_SCALE } from "../../utils/PitchUtil";
 import { getCompositionName } from "../../utils/StringUtil";
 import SelectBox from "../UI/SelectBox";
 import "./Form.scss";
 
-export default function Form({ formData, onChange }) {
+type FormProps = {
+    formData: ScaledCompositionSource,
+    onChange: ( event: any ) => void
+};
 
-    const data = { ...formData };
+const Form = ({ formData, onChange }: FormProps ) => {
 
-    const asFloat = value => {
+    const data: ScaledCompositionSource = { ...formData };
+
+    const asFloat = ( value: string ) => {
         const valueAsFloat = parseFloat( value );
         return isNaN( valueAsFloat ) ? "" : valueAsFloat;
     };
 
-    const handleChange = ( prop, value ) => {
-        data[ prop ] = value;
+    const handleChange = ( prop: keyof ScaledCompositionSource, value: any ) => {
+        ( data as any )[ prop ] = value;
         onChange( data );
     };
 
@@ -45,23 +51,23 @@ export default function Form({ formData, onChange }) {
 
     const notes = OCTAVE_SCALE.reduce(( acc, note ) => ({ ...acc, [ note ]: note }), {});
 
-    const handleNoteSelect = event => {
-        setNotes( event.target.value, data.scaleSelect.name );
+    const handleNoteSelect = ( event: React.ChangeEvent ) => {
+        setNotes(( event.target as HTMLFormElement ).value, data.scaleSelect.name );
     };
 
-    const handleScaleSelect = event => {
-        setNotes( data.scaleSelect.note, event.target.value);
+    const handleScaleSelect = ( event: React.ChangeEvent ) => {
+        setNotes( data.scaleSelect.note, ( event.target as HTMLFormElement ).value );
     };
 
-    const setNotes = ( note, name ) => {
+    const setNotes = ( note: string, name: string ) => {
         handleChange( "scaleSelect", { note, name });
-        const scaleIntervals = scales[ name ];
+        const scaleIntervals = ( scales as any )[ name ];
         if ( !scaleIntervals ) {
             return;
         }
         const scaleStart  = OCTAVE_SCALE.indexOf( data.scaleSelect.note );
         const scaleLength = OCTAVE_SCALE.length;
-        handleChange( "scale", scaleIntervals.map( index => {
+        handleChange( "scale", scaleIntervals.map(( index: number ) => {
             return OCTAVE_SCALE[( scaleStart + index ) % scaleLength ]
         }).filter( Boolean ).join( "," ));
     };
@@ -72,7 +78,7 @@ export default function Form({ formData, onChange }) {
             data.scale.split( "," )
                 .filter( Boolean )
                 .map( value => ({ value, sort: Math.random() }))
-                .sort(( a, b ) => a.sort - b.sort)
+                .sort(( a: { sort: number }, b: { sort: number } ) => a.sort - b.sort)
                 .map(({ value }) => value.trim() )
                 .join( "," )
         );
@@ -153,7 +159,7 @@ export default function Form({ formData, onChange }) {
                     <fieldset className="form__fieldset">
                         <legend>MIDI export options</legend>
                         <div className="form__wrapper">
-                            <label htmlFor="utpp">Pattern to unique track</label>
+                            <label htmlFor="utpp">Generate unique MIDI track for each new pattern</label>
                             <input
                                 id="utpp"
                                 type="checkbox"
@@ -237,4 +243,5 @@ export default function Form({ formData, onChange }) {
             </div>
         </form>
     );
-}
+};
+export default Form;

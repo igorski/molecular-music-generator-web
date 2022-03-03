@@ -24,7 +24,7 @@
 import { useState } from "react";
 import "./Info.scss";
 
-export default function Info( props ) {
+export default function Info( props?: any ) {
     const [ opened, setOpened ] = useState( false );
 
     return (

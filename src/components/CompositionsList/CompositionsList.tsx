@@ -24,7 +24,12 @@
 import { COMPOSITIONS } from "../../definitions/samples";
 import "./CompositionsList.scss";
 
-export default function CompositionsList({ selected, onSelect }) {
+type CompositionsListProps = {
+    selected: string,
+    onSelect: ( event: any ) => void
+};
+
+export default function CompositionsList({ selected, onSelect }: CompositionsListProps ) {
     return (
         <div className="compositions-list">
             <h2 className="compositions-list__title">Sample compositions</h2>

@@ -5,7 +5,7 @@
  * @param {String} data as String, base64 encoded content
  * @param {String} fileName name of file
  */
-export const saveAsFile = ( data, fileName ) => {
+export const saveAsFile = ( data: string, fileName: string ): void => {
     const anchor  = document.createElement( "a" );
     anchor.style.display = "none";
     anchor.href = data;

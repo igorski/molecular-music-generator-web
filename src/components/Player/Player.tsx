@@ -22,11 +22,28 @@
  * SOFTWARE.
 */
 import { Component } from "react";
+import Composition from "../../model/Composition";
 import { setupCompositionPlayback, play, pause, goToMeasure } from "../../services/AudioService";
 import "./Player.scss";
 
-export default class Player extends Component {
-    constructor( props ) {
+type PlayerProps = {
+    composition: Composition
+};
+
+interface PlayerState {
+    measure   : number,
+    beat      : number,
+    sixteenth : number,
+    total     : number,
+    time      : number,
+    disabled  : boolean,
+    playing   : boolean,
+};
+
+export default class Player extends Component<PlayerProps, PlayerState> {
+    _keyHandler: ( e:any ) => void;
+
+    constructor( props: PlayerProps ) {
         super( props );
 
         this.state = {
@@ -40,8 +57,8 @@ export default class Player extends Component {
         };
     }
 
-    componentDidMount() {
-        this._keyHandler = e => {
+    componentDidMount(): void {
+        this._keyHandler = ( e: React.KeyboardEvent ) => {
             if ( e.keyCode === 32 && this.props.composition ) {
                 e.preventDefault();
                 this.togglePlayBack( true );
@@ -50,16 +67,16 @@ export default class Player extends Component {
         document.body.addEventListener( "keydown", this._keyHandler );
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         document.body.removeEventListener( "keydown", this._keyHandler );
     }
 
-    componentDidUpdate( prevProps ) {
+    componentDidUpdate( prevProps: PlayerProps ): void {
         if ( this.props.composition === prevProps.composition ) {
             return;
         }
         this.setState({ disabled: false, measure: 0, beat: 0, sixteenth: 0 });
-        setupCompositionPlayback( this.props.composition, ( measure, beat, sixteenth, total, time ) => {
+        setupCompositionPlayback( this.props.composition, ( measure: number, beat: number, sixteenth: number, total: number, time: number ) => {
             this.setState({ measure, beat, sixteenth, total, time });
         });
         if ( this.state.playing ) {
@@ -67,24 +84,24 @@ export default class Player extends Component {
         }
     }
 
-    togglePlayBack( resetPosition = false ) {
+    togglePlayBack( resetPosition: boolean = false ): void {
         if ( !this.state.playing ) {
             play();
         } else {
             pause();
         }
         if ( resetPosition ) {
-            this.setState({ ...goToMeasure( 0 ) });
+            this.setState({ ...this.state, ...goToMeasure( 0 ) });
         }
         this.setState({ playing: !this.state.playing });
     }
 
-    goToPreviousMeasure() {
-        this.setState({ ...goToMeasure( this.state.measure - 1 ) });
+    goToPreviousMeasure(): void {
+        this.setState({ ...this.state, ...goToMeasure( this.state.measure - 1 ) });
     }
 
-    goToNextMeasure() {
-        this.setState({ ...goToMeasure( this.state.measure + 1 ) });
+    goToNextMeasure(): void {
+        this.setState({ ...this.state, ...goToMeasure( this.state.measure + 1 ) });
     }
 
     render() {
@@ -108,7 +125,7 @@ export default class Player extends Component {
                 <button
                     type="button"
                     className="player__transport-button"
-                    disabled={ this.state.disabled || this.state.measure === this.total - 1 }
+                    disabled={ this.state.disabled || this.state.measure === this.state.total - 1 }
                     onClick={ () => this.goToNextMeasure() }
                 ><img alt="fast forward one measure" src="./icons/icon-forward.svg" /></button>
             </div>

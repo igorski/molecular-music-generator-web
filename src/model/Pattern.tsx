@@ -21,39 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import Note from "./Note";
+
 export default class Pattern
 {
-    constructor( notes, patternNum, offset ) {
+    name       : string;
+    notes      : Array<Note>;
+    patternNum : number;
+    offset     : number;
+
+    constructor( name: string, notes: Array<Note> = [], patternNum: number = 0, offset: number = 0 ) {
+        this.name       = name;
         this.notes      = notes;      // all the notes within the pattern
         this.patternNum = patternNum; // the number of this pattern within the total sequence
         this.offset     = offset;     // the start offset of the pattern
     }
 
-    offsetConflictsWithPattern( compareNote ) {
+    offsetConflictsWithPattern( compareNoteOffset: number ): boolean {
         const noteOffsets = this.getNoteOffsets();
 
         for ( const noteOffset of noteOffsets ) {
             const actualOffset = noteOffset - this.offset;
             if ( actualOffset === 0 ) {
-                if ( actualOffset === compareNote ) {
-                    return  true;
+                if ( actualOffset === compareNoteOffset ) {
+                    return true;
                 }
-            } else if ( compareNote % actualOffset === 0 ) {
+            } else if ( compareNoteOffset % actualOffset === 0 ) {
                 return true;
             }
         }
         return false;
     }
 
-    getNoteOffsets() {
+    getNoteOffsets(): Array<number> {
         return this.notes.map(({ offset }) => offset );
     }
 
-    getRangeStartOffset() {
+    getRangeStartOffset(): number {
         return this.notes[ 0 ]?.offset ?? 0;
     }
 
-    getRangeEndOffset() {
+    getRangeEndOffset(): number {
         if ( this.notes.length > 0 ) {
             const lastNote = this.notes[ this.notes.length - 1 ];
             return lastNote.offset + lastNote.duration;
@@ -61,7 +69,7 @@ export default class Pattern
         return 0;
     }
 
-    getRangeLength() {
+    getRangeLength(): number {
         return this.getRangeEndOffset() - this.getRangeStartOffset();
     }
 }

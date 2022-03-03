@@ -22,7 +22,13 @@
  * SOFTWARE.
 */
 export default class Note {
-    constructor( note, octave, offset, duration, measure ) {
+    note     : string;
+    octave   : number;
+    offset   : number;
+    duration : number;
+    measure  : number;
+
+    constructor( note: string, octave: number, offset: number, duration: number, measure: number ) {
         this.note      = note;
         this.octave    = octave;
         this.offset    = offset;    // offset within the sequence

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Igor Zinken
+ * Copyright (c) 2015-2022 Igor Zinken
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import Pattern from "./Pattern";
+
 export default class Composition
 {
-    constructor( timeSigBeatAmount, timeSigBeatUnit, tempo, patternLength, patternAmount ) {
+    beatAmount    : number;
+    beatUnit      : number;
+    totalMeasures : number;
+    tempo         : number;
+    patterns      : Array<Pattern>;
+
+    constructor( timeSigBeatAmount: number, timeSigBeatUnit: number, tempo: number,
+                 patternLength: number, patternAmount: number ) {
         this.beatAmount    = timeSigBeatAmount;
         this.beatUnit      = timeSigBeatUnit;
         this.totalMeasures = patternLength * patternAmount;
 
-        this.tempo  = tempo;
-        this.tracks = [];
+        this.tempo    = tempo;
+        this.patterns = [];
     }
 };

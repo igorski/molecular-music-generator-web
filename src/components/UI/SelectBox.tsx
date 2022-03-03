@@ -44,13 +44,20 @@ const Select = styled.select`
     }
 `;
 
+type SelectBoxProps = {
+    title: string,
+    items: object,
+    onChange: ( event: any ) => void,
+    selected?: string
+};
+
 /**
  * @param {String} title of select box
  * @param {Object} items key value pairs of all options to display
  * @param {Function} onChange handler to fire when option is selected
  * @param {String=} selected name of the optionally selected option key
  */
-export default function SelectBox({ title, items, onChange, selected = "" }) {
+export default function SelectBox({ title, items, onChange, selected = "" }: SelectBoxProps ) {
 
     return (
         <Select onChange={ onChange } value={ selected }>

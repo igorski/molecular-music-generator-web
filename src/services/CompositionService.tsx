@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import { CompositionSource } from "../interfaces/CompositionSource";
 import Pattern from "../model/Pattern";
 import Note from "../model/Note";
 import Composition from "../model/Composition";
 import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 
-export const createComposition = ( props ) => {
+export const createComposition = ( props: CompositionSource ): Composition => {
 
-    const out = new Composition(
+    const out: Composition = new Composition(
         props.timeSigBeatAmount,
         props.timeSigBeatUnit,
         props.tempo,
@@ -38,15 +39,15 @@ export const createComposition = ( props ) => {
 
     // --- COMPOSITION
 
-    let track = createTrack();
-    out.tracks.push( track );
+    let pattern = new Pattern( "melody" );
+    out.patterns.push( pattern );
 
     let currentPosition   = 0;
     let currentBarLength  = 0;
     let noteLength = props.note1Length;
 
-    const patterns = [];
-    let notes = [];
+    const patterns: Array<Pattern> = [];
+    let notes: Array<Note> = [];
 
     // pre calculate all pitches
 
@@ -73,7 +74,7 @@ export const createComposition = ( props ) => {
     const BEAT    = MEASURE / out.beatUnit;
     const PATTERN_LENGTH = Math.ceil( props.patternLength / out.beatUnit );
 
-    let currentPattern = new Pattern( notes, 0, currentPosition );
+    let currentPattern: Pattern = new Pattern( pattern.name, notes, 0, currentPosition );
 
     for ( let i = 0, l = pitches.length; i < l; ++i ) {
 
@@ -91,7 +92,7 @@ export const createComposition = ( props ) => {
 
         // create new note
 
-        const note = new Note(
+        const note: Note = new Note(
             pitch.note, pitch.octave, currentPosition, noteLength * BEAT,
             Math.floor( currentPosition / MEASURE )
         );
@@ -112,7 +113,7 @@ export const createComposition = ( props ) => {
 
             // store current notes in new pattern
             notes          = [];
-            currentPattern = new Pattern( notes, patterns.length, currentPosition );
+            currentPattern = new Pattern( pattern.name, notes, patterns.length, currentPosition );
 
             currentBarLength = 0;
         }
@@ -134,27 +135,27 @@ export const createComposition = ( props ) => {
 
     const totalLength = currentPosition;
 
-    // loop all patterns to fit song length, add their notes to the track
+    // loop all patterns to fit song length, add their notes to the current pattern
 
-    for ( const pattern of patterns ) {
+    for ( const comparePattern of patterns ) {
         let patternLength = 0;
         while ( patternLength < ( totalLength - pattern.offset )) {
-            for ( const note of pattern.notes ) {
+            for ( const note of comparePattern.notes ) {
                 const offset = note.offset + patternLength;
-                track.notes.push({
+                pattern.notes.push({
                     ...note,
                     offset,
                     measure : Math.floor( offset / MEASURE )
                 });
             }
-            patternLength += pattern.getRangeLength();
+            patternLength += comparePattern.getRangeLength();
         }
 
-        // create new track for pattern, if specified
+        // create new pattern for next sequence, if specified
 
         if ( props.uniqueTrackPerPattern ) {
-            track = createTrack();
-            out.tracks.push( track );
+            pattern = new Pattern( "melody" );
+            out.patterns.push( pattern );
         }
     }
     return out;
@@ -162,11 +163,7 @@ export const createComposition = ( props ) => {
 
 /* internal methods */
 
-function createTrack( name = "melody" ) {
-    return { name, notes: [] };
-}
-
-function offsetConflictsWithPattern( noteOffset, patterns ) {
+function offsetConflictsWithPattern( noteOffset: number, patterns: Array<Pattern> ): boolean {
     for ( const pattern of patterns ) {
         if ( pattern.notes.length > 0 &&
              pattern.offsetConflictsWithPattern( noteOffset )) {

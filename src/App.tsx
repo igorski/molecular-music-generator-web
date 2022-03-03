@@ -28,6 +28,7 @@ import Form from "./components/Form/Form";
 import Info from "./components/Info/Info";
 import Player from "./components/Player/Player";
 import { DEFAULT_COMPOSITION } from "./definitions/samples";
+import { CompositionSource, ScaledCompositionSource } from "./interfaces/CompositionSource";
 import { createComposition } from "./services/CompositionService";
 import { createMIDI } from "./services/MidiService";
 import { saveAsFile } from "./services/FileService";
@@ -41,7 +42,10 @@ import "./styles/_mixins.scss";
 
 function App() {
 
-    const [ data, setData ] = useState({ ...DEFAULT_COMPOSITION, scaleSelect: { note: "C", name: "" } });
+    const [ data, setData ] = useState({
+        ...DEFAULT_COMPOSITION,
+        scaleSelect: { note: "C", name: "" }
+    });
 
     const [ hasChanges, setHasChanges ] = useState( true );
     const [ composition, setComposition ] = useState( null );
@@ -49,7 +53,7 @@ function App() {
 
     // directly generate composition once data has been submitted (or on request)
 
-    const generateComposition = optComposition => {
+    const generateComposition = ( optComposition?: CompositionSource ) => {
         try {
             setComposition( createComposition( optComposition || data ));
             setHasChanges( false );
@@ -74,12 +78,12 @@ function App() {
     }, [ composition ]);
 
 
-    const handleChange = data => {
+    const handleChange = ( data: ScaledCompositionSource ) => {
         setData( data );
         setHasChanges( true );
     };
 
-    const handleCompositionSelect = composition => {
+    const handleCompositionSelect = ( composition: CompositionSource ) => {
         setData({ ...composition, scaleSelect: { note: "", name: "" } });
         setHasChanges( false );
         generateComposition( composition );
@@ -132,8 +136,8 @@ function App() {
             <div className="app__footer">
                 <p>
                     This is an <a href="https://github.com/igorski/molecular-music-generator-web" title="Molecular Music Generator source code on GitHub" target="_blank" rel="noopener noreferrer">open source</a> tool by igorski.nl. Transport icons designed by&nbsp;
-                    <a href="https://freeicons.io/profile/2257" alt="www.wishforge.games profile on Free Icons site" target="_blank" rel="noopener noreferrer">www.wishforge.games</a>
-                    &nbsp;on <a href="https://freeicons.io" alt="Free Icons site" target="_blank" rel="noopener noreferrer">freeicons.io</a>.
+                    <a href="https://freeicons.io/profile/2257" title="www.wishforge.games profile on Free Icons site" target="_blank" rel="noopener noreferrer">www.wishforge.games</a>
+                    &nbsp;on <a href="https://freeicons.io" title="Free Icons site" target="_blank" rel="noopener noreferrer">freeicons.io</a>.
                 </p>
             </div>
             <ToastContainer hideProgressBar autoClose={2500} />

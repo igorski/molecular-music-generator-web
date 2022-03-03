@@ -21,20 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
+import type Tone from "tone/build/esm/index.d";
+import Composition from "../model/Composition";
+import Note from "../model/Note";
 import { getMeasureDurationInSeconds } from "../utils/AudioMath";
 import { getFrequency } from "../utils/PitchUtil";
 
-const initializeCallbacks = [];
-let Tone;
-let initialized = false;
-const parts = [];
-const envelopes = [];
-const oscillators = [];
-let sequence = null;
-let limiter = null;
-let eq = null;
-let comp = null;
-let notes = [];
+const initializeCallbacks: Array<Function> = [];
+let ToneAPI: typeof Tone = null;
+let initialized: boolean = false;
+
+const parts: Array<Tone.Part> = [];
+const envelopes: Array<Tone.AmplitudeEnvelope> = [];
+const oscillators: Array<Tone.Oscillator> = [];
+let sequence: Tone.Sequence = null;
+let limiter: Tone.Limiter = null;
+let eq: Tone.EQ3 = null;
+let comp: Tone.Compressor = null;
+let notes: Array<Note> = [];
 
 const MAX_POLYPHONY = 30;
 
@@ -44,10 +48,10 @@ const MAX_POLYPHONY = 30;
  * kind of interaction has occurred in the document.
  */
 export const init = async () => {
-    Tone = await import( "tone" );
-    const events = [ "click", "touchstart", "keydown" ];
+    ToneAPI = ( await import( "tone" ) as typeof Tone );
+    const events: Array<string> = [ "click", "touchstart", "keydown" ];
     const handler = async () => {
-        await Tone.start();
+        await ToneAPI.start();
         initialized = true;
         events.forEach( event => {
             document.body.removeEventListener( event, handler, false );
@@ -64,19 +68,19 @@ export const init = async () => {
 /**
  * Start playback of the composition
  */
-export const play = () => Tone.Transport.start();
+export const play = (): typeof Tone.Transport => ToneAPI.Transport.start();
 
 /**
  * Halts playback of the composition
  */
-export const pause = () => Tone.Transport.pause();
+export const pause = (): typeof Tone.Transport => ToneAPI.Transport.pause();
 
 /**
  * Jump to a specific measure in the composition
  */
-export const goToMeasure = measureNum => {
+export const goToMeasure = ( measureNum: number ): { measure: number, beat: number, sixteenths: number }  => {
     stopPlayingParts();
-    Tone.Transport.position = `${measureNum}:0:0`;
+    ToneAPI.Transport.position = `${measureNum}:0:0`;
     enqueueNextMeasure( measureNum );
 
     return { measure: measureNum, beat: 0, sixteenths: 0 };
@@ -85,7 +89,7 @@ export const goToMeasure = measureNum => {
 /**
  * Set up a Synth and Transport within tone.js to play back given composition
  */
-export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
+export const setupCompositionPlayback = ( composition: Composition, sequencerCallback: Function ): void => {
     if ( !initialized ) {
         initializeCallbacks.push( setupCompositionPlayback.bind( this, composition, sequencerCallback ));
         return;
@@ -96,9 +100,9 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
     // lazily create a compressor and limiter to keep all levels in check
 
     if ( !limiter ) {
-        limiter = new Tone.Limiter( -20 ).toDestination();
-        comp = new Tone.Compressor( -40, 3 ).connect( limiter );
-        eq = new Tone.EQ3({
+        limiter = new ToneAPI.Limiter( -20 ).toDestination();
+        comp = new ToneAPI.Compressor( -40, 3 ).connect( limiter );
+        eq = new ToneAPI.EQ3({
             low  : -3,
             mid  : 0,
             high : -10,
@@ -109,11 +113,11 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
 
     // prepare notes for playback in tone.js
 
-    const measureDuration = getMeasureDurationInSeconds( composition.tempo, composition.beatAmount );
+    const measureDuration: number = getMeasureDurationInSeconds( composition.tempo, composition.beatAmount );
 
-    notes = composition.tracks
+    notes = composition.patterns
         .flatMap(({ notes }) => notes )
-        .map( note => {
+        .map(( note: Note ) => {
             return {
                 ...note,
                 offset : note.offset - ( measureDuration * note.measure ),
@@ -122,13 +126,13 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
 
     // set up Transport
 
-    Tone.Transport.timeSignature = [ composition.beatAmount, composition.beatUnit ];
-    Tone.Transport.bpm.value = composition.tempo;
+    ToneAPI.Transport.timeSignature = [ composition.beatAmount, composition.beatUnit ];
+    ToneAPI.Transport.bpm.value = composition.tempo;
 
     // set a callback that enqueues the next measure on the first beat of a new bar
 
-    sequence = new Tone.Sequence(( time ) => {
-        const [ bars, beats, sixteenths ] = Tone.Transport.position.split( ":" ).map( parseFloat );
+    sequence = new ToneAPI.Sequence(( time ) => {
+        const [ bars, beats, sixteenths ] = ( ToneAPI.Transport.position as string ).split( ":" ).map( parseFloat );
         sequencerCallback?.(
             bars, beats, sixteenths, composition.totalMeasures, time
         );
@@ -141,28 +145,30 @@ export const setupCompositionPlayback = ( composition, sequencerCallback ) => {
 
 /* internal methods */
 
-function reset() {
+function reset(): void {
     stopPlayingParts();
     sequence?.stop();
     sequence?.dispose();
-    Tone.Transport.stop();
+    ToneAPI.Transport.stop();
 }
 
-function stopPlayingParts() {
+function stopPlayingParts(): void {
     resetActors( parts );
     resetActors( envelopes );
     resetActors( oscillators );
 }
 
-function resetActors( actorList ) {
+function resetActors( actorList: Array<Tone.ToneEvent|Tone.Envelope|Tone.Oscillator> ): void {
     for ( const actor of actorList ) {
-        typeof actor.stop === "function" && actor.stop(); // envelope, oscillator
+        if ( actor instanceof ToneAPI.Oscillator ) {
+            actor.stop();
+        }
         actor.dispose();
     }
     actorList.length = 0;
 }
 
-function enqueueNextMeasure( measureNum, delta = 0 ) {
+function enqueueNextMeasure( measureNum: number, delta: number = 0 ): void {
     // note we enqueue the notes in reverse as we want to cap max polyphony by
     // excluding the oldest patterns
     const notesToEnqueue = notes.filter(({ measure }) => measure === measureNum ).reverse();
@@ -172,12 +178,12 @@ function enqueueNextMeasure( measureNum, delta = 0 ) {
     if ( notesToEnqueue.length > MAX_POLYPHONY ) {
         notesToEnqueue.splice( 0, MAX_POLYPHONY );
     }
-    parts.push( new Tone.Part(( time, value ) => {
+    parts.push( new ToneAPI.Part(( time, value ) => {
 
         // we use simple envelopes and oscillators instead of the Tonejs synths
         // as they suffer from max polyphony and performance issues on less powerful configurations
 
-        const envelope = new Tone.AmplitudeEnvelope({
+        const envelope = new ToneAPI.AmplitudeEnvelope({
             attack  : 0.2,
             decay   : 0.5,
             sustain : 0.2,
@@ -185,7 +191,7 @@ function enqueueNextMeasure( measureNum, delta = 0 ) {
         });
         envelope.connect( eq );
 
-        const oscillator = new Tone.Oscillator(
+        const oscillator = new ToneAPI.Oscillator(
             getFrequency( value.note, value.octave ), "sawtooth"
         ).start( time ).stop( time + value.duration );
 

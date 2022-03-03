@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
 */
-export const DEFAULT_COMPOSITION = {
+import { CompositionSource } from "../interfaces/CompositionSource";
+
+export const DEFAULT_COMPOSITION: CompositionSource = {
     name: "Default",
     description: "Something to set the mood. Ascending the C minor scale.",
     timeSigBeatAmount: 4,
@@ -37,7 +39,7 @@ export const DEFAULT_COMPOSITION = {
     uniqueTrackPerPattern: false
 };
 
-export const COMPOSITIONS = [
+export const COMPOSITIONS: Array<CompositionSource> = [
     DEFAULT_COMPOSITION,
     {
         ...DEFAULT_COMPOSITION,
