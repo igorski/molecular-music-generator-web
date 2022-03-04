@@ -141,12 +141,15 @@ export const createComposition = ( props: CompositionSource ): Composition => {
         let patternLength = 0;
         while ( patternLength < ( totalLength - pattern.offset )) {
             for ( const note of comparePattern.notes ) {
-                const offset = note.offset + patternLength;
-                pattern.notes.push({
-                    ...note,
-                    offset,
-                    measure : Math.floor( offset / MEASURE )
-                });
+                const offset  = note.offset + patternLength;
+                const clone   = note.clone();
+                clone.offset  = offset;
+                clone.measure = Math.floor( offset / MEASURE );
+
+                // take care not to redeclare/overlap the existing Note at its original offset
+                if ( !hasOverlap( out, clone )) {
+                    pattern.notes.push( clone );
+                }
             }
             patternLength += comparePattern.getRangeLength();
         }
@@ -168,6 +171,17 @@ function offsetConflictsWithPattern( noteOffset: number, patterns: Array<Pattern
         if ( pattern.notes.length > 0 &&
              pattern.offsetConflictsWithPattern( noteOffset )) {
             return true;
+        }
+    }
+    return false;
+}
+
+function hasOverlap( composition: Composition, note: Note ): boolean {
+    for ( const pattern of composition.patterns ) {
+        for ( const compareNote of pattern.notes ) {
+            if ( note.overlaps( compareNote )) {
+                return true;
+            }
         }
     }
     return false;

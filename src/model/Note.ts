@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Igor Zinken
+ * Copyright (c) 2015-2022 Igor Zinken
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,5 +34,32 @@ export default class Note {
         this.offset    = offset;    // offset within the sequence
         this.duration  = duration;  // length of the note
         this.measure   = measure;   // measure the Note belongs to
+    }
+
+    clone(): Note {
+        return new Note( this.note, this.octave, this.offset, this.duration, this.measure );
+    }
+
+    equals( compareNote: Note ): boolean {
+        if ( compareNote === this ) {
+            return true;
+        }
+        
+        return compareNote.note     === this.note &&
+               compareNote.octave   === this.octave &&
+               compareNote.offset   === this.offset &&
+               compareNote.duration === this.duration &&
+               compareNote.measure  === this.measure;
+    }
+
+    overlaps( compareNote: Note ): boolean {
+        if ( compareNote === this ) {
+            return false;
+        }
+
+        return compareNote.note     === this.note &&
+               compareNote.octave   === this.octave &&
+               compareNote.offset   === this.offset &&
+               compareNote.measure  === this.measure;
     }
 }

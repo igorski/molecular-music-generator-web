@@ -118,11 +118,10 @@ export const setupCompositionPlayback = ( composition: Composition, sequencerCal
     notes = composition.patterns
         .flatMap(({ notes }) => notes )
         .map(( note: Note ) => {
-            return {
-                ...note,
-                offset : note.offset - ( measureDuration * note.measure ),
-            };
-    });
+            const clone = note.clone();
+            clone.offset = note.offset - ( measureDuration * note.measure );
+            return clone;
+        });
 
     // set up Transport
 
