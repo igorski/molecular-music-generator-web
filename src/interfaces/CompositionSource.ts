@@ -2,7 +2,7 @@
  * Describes the input properties to generate
  * a composition.
  *
- * @see Composition.tsx and CompositionService.tsx
+ * @see Composition.ts and CompositionService.ts
  */
 export interface CompositionSource {
     name: string,

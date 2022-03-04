@@ -37,12 +37,12 @@ const Form = ({ formData, onChange }: FormProps ) => {
 
     const data: ScaledCompositionSource = { ...formData };
 
-    const asFloat = ( value: string ) => {
+    const asFloat = ( value: string ): number|string => {
         const valueAsFloat = parseFloat( value );
         return isNaN( valueAsFloat ) ? "" : valueAsFloat;
     };
 
-    const handleChange = ( prop: keyof ScaledCompositionSource, value: any ) => {
+    const handleChange = ( prop: keyof ScaledCompositionSource, value: any ): void => {
         ( data as any )[ prop ] = value;
         onChange( data );
     };
@@ -51,15 +51,15 @@ const Form = ({ formData, onChange }: FormProps ) => {
 
     const notes = OCTAVE_SCALE.reduce(( acc, note ) => ({ ...acc, [ note ]: note }), {});
 
-    const handleNoteSelect = ( event: React.ChangeEvent ) => {
+    const handleNoteSelect = ( event: React.ChangeEvent ): void => {
         setNotes(( event.target as HTMLFormElement ).value, data.scaleSelect.name );
     };
 
-    const handleScaleSelect = ( event: React.ChangeEvent ) => {
+    const handleScaleSelect = ( event: React.ChangeEvent ): void => {
         setNotes( data.scaleSelect.note, ( event.target as HTMLFormElement ).value );
     };
 
-    const setNotes = ( note: string, name: string ) => {
+    const setNotes = ( note: string, name: string ): void => {
         handleChange( "scaleSelect", { note, name });
         const scaleIntervals = ( scales as any )[ name ];
         if ( !scaleIntervals ) {
@@ -72,7 +72,7 @@ const Form = ({ formData, onChange }: FormProps ) => {
         }).filter( Boolean ).join( "," ));
     };
 
-    const shuffleScale = () => {
+    const shuffleScale = (): void => {
         handleChange(
             "scale",
             data.scale.split( "," )
